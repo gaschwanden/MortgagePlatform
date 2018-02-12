@@ -10,5 +10,6 @@ Implenting a P2P mortgage platform that is 3rd party verified.
 5. Implementations
 
 ## External Links:
-https://github.com/juanfranblanco/vscode-solidity/ /n
+https://github.com/juanfranblanco/vscode-solidity/ 
+
 https://ethereum.github.io/browser-solidity
