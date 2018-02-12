@@ -10,6 +10,6 @@ Implenting a P2P mortgage platform that is 3rd party verified.
 5. Implementations
 
 ## External Links:
-https://github.com/juanfranblanco/vscode-solidity/ (environment for VisualStudio solidity)
-https://ethereum.github.io/browser-solidity (Test environment for .sol)
-https://github.com/llSourcell/ethereum_demo (DAPP example with homepage / server)
+https://github.com/juanfranblanco/vscode-solidity/ (environment for VisualStudio solidity) <br />
+https://ethereum.github.io/browser-solidity (Test environment for .sol) <br />
+https://github.com/llSourcell/ethereum_demo (DAPP example with homepage / server) <br />
