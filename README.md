@@ -1,6 +1,7 @@
 # PropertyExchange
 
 Implenting a P2P mortgage platform that is 3rd party verified.
+doc:https://docs.google.com/document/d/1-dWKRRIkA_mI7Zhx1zC5iJqj4U61s3nk2uYykAqClnU/edit?usp=sharing
 
 ## Todo
 1. Timeline
