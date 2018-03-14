@@ -1,9 +1,11 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.18;
 
 contract Escrow {
     address public buyer;
     address public seller;
     address public arbiter;
+
+    mapping (string=>bool) documents_verified;
 
     function Escrow(address _seller, address _arbiter) {
         buyer = msg.sender;
