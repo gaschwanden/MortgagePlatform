@@ -1,31 +1,33 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.19;
+
+import "./Document.sol";
 
 contract Escrow {
     address public buyer;
     address public seller;
     address public arbiter;
 
-    mapping (string=>bool) documents_verified;
+    mapping (uint=>bool) documents_verified;
 
-    function Escrow(address _seller, address _arbiter) {
+    function Escrow(address _seller, address _arbiter) public {
         buyer = msg.sender;
         seller = _seller;
         arbiter = _arbiter;
     }
 
-    function payoutToSeller() {
+    function payoutToSeller() private {
         if(msg.sender == buyer || msg.sender == arbiter) {
             if(!seller.send(this.balance)) throw;
         }
     }
 
-    function refundToBuyer() {
+    function refundToBuyer() private{
         if(msg.sender == seller || msg.sender == arbiter) {
             if(!buyer.send(this.balance)) throw;
         }
     }
 
-      function getBalance() constant returns (uint) {
+    function getBalance() private returns (uint) {
         return this.balance;
     }
 }
