@@ -1,0 +1,19 @@
+{
+  "name": "front-end",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nuxt": "^1.4.0",
+    "vue": "^2.5.16",
+    "web3": "^1.0.0-beta.34"
+  }
+}
