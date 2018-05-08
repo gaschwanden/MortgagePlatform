@@ -73,6 +73,12 @@
           </el-table-column>
         </el-table>
       </el-main>
+
+
+       <p>Metamask: {{ web3.isInjected }}</p>
+   <p>Network: {{ web3.networkId }}</p>
+   <p>Account: {{ web3.coinbase }}</p>
+   <p>Balance: {{ web3.balance }}</p>
     </el-container>
   </el-container>
 </template>
@@ -94,7 +100,10 @@
 // const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
   export default {
-
+  beforeCreate () {
+    console.log('registerWeb3 Action dispatched from casino-dapp.vue')
+    this.$store.dispatch('registerWeb3')
+  },
     data() {
       const item = {
         date: '2016-05-02',
@@ -104,6 +113,12 @@
       return {
         tableData: Array(20).fill(item)
       }
-    }
+    },
+    computed: {
+     web3() {
+     console.log(this.$store.state.web3)
+     return this.$store.state.web3
+     }
+   }
   };
 </script>

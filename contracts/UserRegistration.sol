@@ -21,4 +21,5 @@ contract UserRegistration is Ownable {
     function userVerify(address user) internal {
         Users[user].Verified = true;
     }
+    
 }

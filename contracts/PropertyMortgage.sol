@@ -2,6 +2,7 @@ pragma solidity ^0.4.21;
 
 import "./UserRegistration.sol";
 import "./DocRegistration.sol";
+import "./Application.sol";
 
 contract PropertyMortgage is UserRegistration, Document {
 
@@ -26,7 +27,7 @@ contract PropertyMortgage is UserRegistration, Document {
         
     }
 
-    function getDocs() public onlyOwner view returns(Document) {
+    function GetDocs() public view returns(Document[]) {
         Document[] memory result = new Document[](ownerDocCount[msg.sender]);
         uint counter = 0;
         for (uint i = 0; i < documents.length; i++) {
@@ -38,5 +39,8 @@ contract PropertyMortgage is UserRegistration, Document {
         return result;
     }
 
+    function Apply(uint[] docs, uint totalMoney, uint interests) public {
+
+    }
     
 }
