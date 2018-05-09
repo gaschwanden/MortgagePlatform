@@ -4,7 +4,7 @@ import "./UserRegistration.sol";
 import "./DocRegistration.sol";
 import "./Application.sol";
 
-contract PropertyMortgage is UserRegistration, Document {
+contract PropertyMortgage is UserRegistration, Document, Application {
 
 
     function UserRegister(UserType usertype) public {
@@ -40,7 +40,37 @@ contract PropertyMortgage is UserRegistration, Document {
     }
 
     function Apply(uint[] docs, uint totalMoney, uint interests) public {
+        require(checkQualification(docs));
+        apply(docs, totalAmount, interests);
+    }
 
+    function checkQualification(uint[] docs) private view returns (bool) {
+        Document doc;
+        bool idChecked = false;
+        bool financialChecked = false;
+        bool propertyChecked = false;
+
+        for (uint i = 0; i < docs.length; i++) {
+            doc = documents[docs[i]];
+            if (!doc.verified) {
+                return false;
+            }
+            if(doc.DocType == DocType.Id){
+                idChecked = true;
+            }
+            if(doc.DocType == DocType.Financial){
+                financialChecked = true;
+            }
+            if(doc.DocType == DocType.Property){
+                propertyChecked = true;
+            }
+        }
+        if (idChecked && financialChecked && propertyChecked) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     
 }

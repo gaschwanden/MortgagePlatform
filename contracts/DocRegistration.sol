@@ -4,7 +4,7 @@ import "./ERC721BasicToken.sol";
 
 contract DocRegistration is ERC721BasicToken{
     
-    enum DocType {Id, FinancialStatement}
+    enum DocType {Id, Financial, Property}
 
     struct Document{
         uint TimeStamp;

@@ -18,7 +18,7 @@ contract Application {
     }
 
     function apply(uint[] docs, uint totalAmount, uint interests) internal {
-        applications.push(Form(msg.sender, docs, totalAmout, interests));
+        applications.push(Form(msg.sender, docs, totalAmout, interests, Status.WaitforVerify;));
         
     }
 
