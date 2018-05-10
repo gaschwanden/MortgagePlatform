@@ -2,7 +2,7 @@ pragma solidity ^0.4.21;
 
 import "./ERC721BasicToken.sol";
 
-contract DocRegistration is ERC721BasicToken{
+contract DocRegistration{
     
     enum DocType {Id, Financial, Property}
 

@@ -1,30 +1,45 @@
 pragma solidity ^0.4.21;
 
-import "./Document.sol";
-
 contract Escrow {
-    address public buyer;
-    address public seller;
-    address public arbiter;
 
-    mapping (uint=>bool) documents_verified;
-
-    function Escrow(address _seller, address _arbiter) public {
-        buyer = msg.sender;
-        seller = _seller;
-        arbiter = _arbiter;
+    struct EscrowContract {
+        address Borrower;
+        address Arbiter;
+        uint TotalAmount;
+        uint CurAmount;
+        uint StartTime;
+        uint Duration;
+        mapping (address=>uint) InvestedAmount;
     }
 
-    function payoutToSeller() private {
-        if(msg.sender == buyer || msg.sender == arbiter) {
-            if(!seller.send(this.balance)) throw;
+
+    EscrowContract[] escrows;
+
+    mapping (uint=>EscrowContract) appIdtoEscrow;
+
+    function init(address borrower, address arbiter, uint totalAmount, uint duration, address id) internal {
+        escrows.push(EscrowContract(borrower, arbiter, totalAmount, 0, 0, duration));
+    }
+
+    function invest(uint appId) internal{
+        EscrowContract escrow = appIdtoEscrow[appId];
+        uint left = escrow.TotalAmount - escrow.CurAmount;
+        if (msg.value > left) {
+            uint invested = msg.value - left;
+            escrow.InvestedAmount[msg.sender] += invested;
+            escrow.CurAmount = escrow.TotalAmount;
+            refundToBuyer(appId);
         }
     }
 
-    function refundToBuyer() private{
-        if(msg.sender == seller || msg.sender == arbiter) {
-            if(!buyer.send(this.balance)) throw;
-        }
+    function start(uint appId) private {
+        EscrowContract escrow = appIdtoEscrow[appId];
+        escrow.StartTime = now;
+
+    }
+
+    function refundToBuyer(uint amount) private {
+        msg.sender.transfer(amount);
     }
 
     function getBalance() private returns (uint) {

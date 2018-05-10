@@ -39,13 +39,31 @@ contract PropertyMortgage is UserRegistration, DocRegistration, Application {
         return result;
     }
 
+    function GetApplications() public view returns(uint[]) {
+        uint[] memory result = new uint[](ownerAppCount[msg.sender]);
+        uint counter = 0;
+        for (uint i = 0; i < applications.length; i++) {
+            if (appToOwner[i] == msg.sender) {
+                result[counter] = i;
+                counter++;
+            }
+        }
+        return result;
+    }
+
     function Apply(uint[] docs, uint totalAmount, uint interests) public {
         require(checkQualification(docs));
         apply(docs, totalAmount, interests);
     }
+    
+    function ApplicationVerify(uint appId) public {
+        
+        applicationVerify(appId);
+    }
+
 
     function checkQualification(uint[] docs) private view returns (bool) {
-        Document doc;
+        Document memory doc;
         bool idChecked = false;
         bool financialChecked = false;
         bool propertyChecked = false;
