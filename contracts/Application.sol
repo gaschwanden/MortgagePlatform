@@ -5,20 +5,20 @@ import "./DocRegistration.sol";
 
 contract Application {
 
-    Form[] apllications;
+    Form[] applications;
 
-    enum Status {WaitforVerify, WaitForInvest, InProgress, Finished}
+    enum AppStatus {WaitforVerify, WaitForInvest, InProgress, Finished}
 
     struct Form {
         address Applicant;
         uint[] Docs;
         uint TotalAmount;
         uint Interests;
-        Status Status;
+        AppStatus Status;
     }
 
     function apply(uint[] docs, uint totalAmount, uint interests) internal {
-        applications.push(Form(msg.sender, docs, totalAmout, interests, Status.WaitforVerify;));
+        applications.push(Form(msg.sender, docs, totalAmount, interests, AppStatus.WaitforVerify));
         
     }
 

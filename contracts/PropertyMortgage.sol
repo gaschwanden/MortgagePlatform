@@ -4,11 +4,11 @@ import "./UserRegistration.sol";
 import "./DocRegistration.sol";
 import "./Application.sol";
 
-contract PropertyMortgage is UserRegistration, Document, Application {
+contract PropertyMortgage is UserRegistration, DocRegistration, Application {
 
 
     function UserRegister(UserType usertype) public {
-        userRegister(userType);
+        userRegister(usertype);
     }
 
     function UserVerify(address user) public {
@@ -18,28 +18,28 @@ contract PropertyMortgage is UserRegistration, Document, Application {
     }
 
     function DocRegister(DocType doctype, string source) public {
-        docRegister(msg.sender, doctype, source);
+        docRegister(doctype, source);
     }
 
-    function DocVerify(uint userId, uint docId) public {
-        require(Users[userId].Type == UserType.Verifier);
+    function DocVerify(uint docId) public {
+        require(Users[msg.sender].Type == UserType.Verifier);
         docVerify(docId);
         
     }
 
-    function GetDocs() public view returns(Document[]) {
-        Document[] memory result = new Document[](ownerDocCount[msg.sender]);
+    function GetDocs() public view returns(uint[]) {
+        uint[] memory result = new uint[](ownerDocCount[msg.sender]);
         uint counter = 0;
         for (uint i = 0; i < documents.length; i++) {
             if (docToOwner[i] == msg.sender) {
-                result[counter] = documents[i];
+                result[counter] = i;
                 counter++;
             }
         }
         return result;
     }
 
-    function Apply(uint[] docs, uint totalMoney, uint interests) public {
+    function Apply(uint[] docs, uint totalAmount, uint interests) public {
         require(checkQualification(docs));
         apply(docs, totalAmount, interests);
     }
@@ -52,16 +52,16 @@ contract PropertyMortgage is UserRegistration, Document, Application {
 
         for (uint i = 0; i < docs.length; i++) {
             doc = documents[docs[i]];
-            if (!doc.verified) {
+            if (!doc.Verified) {
                 return false;
             }
-            if(doc.DocType == DocType.Id){
+            if(doc.Type == DocType.Id){
                 idChecked = true;
             }
-            if(doc.DocType == DocType.Financial){
+            if(doc.Type == DocType.Financial){
                 financialChecked = true;
             }
-            if(doc.DocType == DocType.Property){
+            if(doc.Type == DocType.Property){
                 propertyChecked = true;
             }
         }

@@ -22,9 +22,9 @@ contract DocRegistration is ERC721BasicToken{
     }
 
     function docRegister(DocType doctype, string source) internal {
-        uint id = Documents.push(Document(owner, doctype, source, false));
+        uint id = documents.push(Document(now, doctype, source, false));
         docToOwner[id] = msg.sender;
-        ownerDocCout[msg.sender]++;
+        ownerDocCount[msg.sender]++;
     }
 
     function docVerify(uint docId) internal {
