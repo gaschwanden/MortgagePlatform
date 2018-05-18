@@ -4,21 +4,24 @@ import "./UserRegistration.sol";
 import "./DocRegistration.sol";
 import "./Application.sol";
 
-contract PropertyMortgage is UserRegistration, DocRegistration, Application {
+contract HomeMortgage is UserRegistration, DocRegistration {
 
+    Application[] public Applications;
+    mapping(address => uint) ownerAppCount;
+    mapping(uint =>address) appToOwner;
 
-    function UserRegister(UserType usertype) public {
-        userRegister(usertype);
+    function UserRegister(string name, UserType usertype) public {
+        userRegister(name, usertype);
     }
 
-    function UserVerify(address user) public {
+    function UserVerify(address user) public onlyOwner {
         User memory verifier = Users[msg.sender];
         require(verifier.Type == UserType.Verifier);
         userVerify(user);
     }
 
-    function DocRegister(DocType doctype, string source) public {
-        docRegister(doctype, source);
+    function DocRegister(string name, DocType doctype, string source) public {
+        docRegister(name, doctype, source);
     }
 
     function DocVerify(uint docId) public {
@@ -42,7 +45,7 @@ contract PropertyMortgage is UserRegistration, DocRegistration, Application {
     function GetApplications() public view returns(uint[]) {
         uint[] memory result = new uint[](ownerAppCount[msg.sender]);
         uint counter = 0;
-        for (uint i = 0; i < applications.length; i++) {
+        for (uint i = 0; i < Applications.length; i++) {
             if (appToOwner[i] == msg.sender) {
                 result[counter] = i;
                 counter++;
@@ -51,15 +54,12 @@ contract PropertyMortgage is UserRegistration, DocRegistration, Application {
         return result;
     }
 
-    function Apply(uint[] docs, uint totalAmount, uint interests) public {
+    function Apply(uint[] docs, uint totalAmount, uint duration, uint interests) public {
         require(checkQualification(docs));
-        apply(docs, totalAmount, interests);
+        Application app = new Application(msg.sender, docs, totalAmount, duration, interests);
+        Applications.push(app);
     }
-    
-    function ApplicationVerify(uint appId) public {
-        
-        applicationVerify(appId);
-    }
+
 
 
     function checkQualification(uint[] docs) private view returns (bool) {

@@ -3,33 +3,31 @@ pragma solidity ^0.4.21;
 import "./Escrow.sol";
 import "./DocRegistration.sol";
 
-contract Application is Escrow{
+contract Application {
 
-    Form[] applications;
-
+    
     enum AppStatus {WaitforVerify, WaitForInvest, InProgress, Finished}
 
-    struct Form {
-        address Applicant;
-        uint[] Docs;
-        uint TotalAmount;
-        uint Interests;
-        AppStatus Status;
+    address public Applicant;
+    uint[] public Docs;
+    uint public TotalAmount;
+    uint public Duration;
+    uint public Interests;
+    AppStatus public Status;
+    Escrow public escrow;
+
+    constructor(address applicant, uint[] docs, uint totalAmount, uint duration, uint interests) public {
+        Applicant = applicant;
+        Docs = docs;
+        TotalAmount = totalAmount;
+        Duration = duration;
+        Interests = interests;
+        Status = AppStatus.WaitforVerify;
+        new Escrow(applicant, msg.sender, totalAmount, duration, interests);
     }
 
-    mapping(uint =>address) appToOwner;
-    mapping(address => uint) ownerAppCount;
-    mapping(uint => uint) appToEscrow;
+    function Invest() public {
 
-    function apply(uint[] docs, uint totalAmount, uint interests) internal {
-        uint id = applications.push(Form(msg.sender, docs, totalAmount, interests, AppStatus.WaitforVerify));
-        appToOwner[id] = msg.sender;
-        ownerAppCount[msg.sender]++;
-    }
-
-    function applicationVerify(uint appId) internal {
-        applications[appId].Status = AppStatus.WaitForInvest;
-        
     }
 
 }

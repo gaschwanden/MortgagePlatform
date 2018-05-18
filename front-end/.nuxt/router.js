@@ -3,6 +3,13 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
+const _1c8f7804 = () => import('../pages/register.vue' /* webpackChunkName: "pages/register" */).then(m => m.default || m)
+const _c217e4cc = () => import('../pages/myheader.vue' /* webpackChunkName: "pages/myheader" */).then(m => m.default || m)
+const _5fab9c50 = () => import('../pages/login.vue' /* webpackChunkName: "pages/login" */).then(m => m.default || m)
+const _324985aa = () => import('../pages/docform.vue' /* webpackChunkName: "pages/docform" */).then(m => m.default || m)
+const _6bca1eff = () => import('../pages/application.vue' /* webpackChunkName: "pages/application" */).then(m => m.default || m)
+const _3b023146 = () => import('../pages/market.vue' /* webpackChunkName: "pages/market" */).then(m => m.default || m)
+const _6991f258 = () => import('../pages/profile.vue' /* webpackChunkName: "pages/profile" */).then(m => m.default || m)
 const _06828ec1 = () => import('../pages/index.vue' /* webpackChunkName: "pages/index" */).then(m => m.default || m)
 
 
@@ -63,6 +70,41 @@ export function createRouter () {
     linkExactActiveClass: 'nuxt-link-exact-active',
     scrollBehavior,
     routes: [
+		{
+			path: "/register",
+			component: _1c8f7804,
+			name: "register"
+		},
+		{
+			path: "/myheader",
+			component: _c217e4cc,
+			name: "myheader"
+		},
+		{
+			path: "/login",
+			component: _5fab9c50,
+			name: "login"
+		},
+		{
+			path: "/docform",
+			component: _324985aa,
+			name: "docform"
+		},
+		{
+			path: "/application",
+			component: _6bca1eff,
+			name: "application"
+		},
+		{
+			path: "/market",
+			component: _3b023146,
+			name: "market"
+		},
+		{
+			path: "/profile",
+			component: _6991f258,
+			name: "profile"
+		},
 		{
 			path: "/",
 			component: _06828ec1,

@@ -2,39 +2,36 @@ pragma solidity ^0.4.21;
 
 contract Escrow {
 
-    struct EscrowContract {
-        address Borrower;
-        address Arbiter;
-        uint TotalAmount;
-        uint CurAmount;
-        uint StartTime;
-        uint Duration;
-        mapping (address=>uint) InvestedAmount;
+    address Borrower;
+    address Arbiter;
+    uint TotalAmount;
+    uint CurAmount;
+    uint StartTime;
+    uint Duration;
+    uint Interests;
+    mapping (address=>uint) InvestedAmount;
+
+    constructor (address borrower, address arbiter, uint totalAmount, uint duration, uint interests) public {
+        Borrower = borrower;
+        Arbiter = arbiter;
+        TotalAmount = totalAmount;
+        CurAmount = 0;
+        StartTime = 0;
+        Duration = duration;
     }
 
-
-    EscrowContract[] escrows;
-
-    mapping (uint=>EscrowContract) appIdtoEscrow;
-
-    function init(address borrower, address arbiter, uint totalAmount, uint duration, address id) internal {
-        escrows.push(EscrowContract(borrower, arbiter, totalAmount, 0, 0, duration));
-    }
-
-    function invest(uint appId) internal{
-        EscrowContract escrow = appIdtoEscrow[appId];
-        uint left = escrow.TotalAmount - escrow.CurAmount;
+    function invest() internal {
+        uint left = TotalAmount - CurAmount;
         if (msg.value > left) {
             uint invested = msg.value - left;
-            escrow.InvestedAmount[msg.sender] += invested;
-            escrow.CurAmount = escrow.TotalAmount;
-            refundToBuyer(appId);
+            InvestedAmount[msg.sender] += invested;
+            CurAmount = TotalAmount;
+            refundToBuyer(left);
         }
     }
 
     function start(uint appId) private {
-        EscrowContract escrow = appIdtoEscrow[appId];
-        escrow.StartTime = now;
+        StartTime = now;
 
     }
 

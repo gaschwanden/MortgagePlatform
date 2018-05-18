@@ -1,12 +1,12 @@
 pragma solidity ^0.4.21;
 
-import "./ERC721BasicToken.sol";
 
 contract DocRegistration{
     
     enum DocType {Id, Financial, Property}
 
     struct Document{
+        string Name;
         uint TimeStamp;
         DocType Type;
         string SourceUrl;
@@ -17,12 +17,8 @@ contract DocRegistration{
     mapping(uint =>address) docToOwner;
     mapping(address => uint) ownerDocCount;
 
-    constructor() public{
-        
-    }
-
-    function docRegister(DocType doctype, string source) internal {
-        uint id = documents.push(Document(now, doctype, source, false));
+    function docRegister(string name, DocType doctype, string source) internal {
+        uint id = documents.push(Document(name, now, doctype, source, false));
         docToOwner[id] = msg.sender;
         ownerDocCount[msg.sender]++;
     }
