@@ -13,32 +13,14 @@ let getWeb3 = new Promise(function (resolve, reject) {
 
   if (typeof window.web3 !== 'undefined') {
     let web3 = new Web3(window.web3.currentProvider)
-    resolve({
-      injectedWeb3 : web3.isConnected(),
-      web3
-    })
+    let currentProvider = web3.currentProvider
+    resolve({web3, currentProvider})
   } else {
      let web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545')) //GANACHE FALLBACK
      if (!web3)
         reject(new Error('Unable to connect to Metamask'))
   }
 })
-  .then(result => {
-    return new Promise(function (resolve, reject) {
-      // Retrieve network ID
-      console.log(result)
-      result.web3.version.getNetwork((err, networkId) => {
-        if (err) {
-          // If we can't find a networkId keep result the same and reject the promise
-          reject(new Error('Unable to retrieve network ID'))
-        } else {
-          // Assign the networkId property to our result and resolve promise
-          result.networkId = networkId;
-          resolve(result)
-        }
-      })
-    })
-  })
   .then(result => {
     return new Promise(function (resolve, reject) {
       // Retrieve coinbase

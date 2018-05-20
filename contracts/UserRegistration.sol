@@ -12,11 +12,11 @@ contract UserRegistration is Ownable {
         UserType Type;
         bool Verified;
     }
-    mapping(address => User) Users;
+    mapping(address => User) public Users;
 
 
     function userRegister(string name, UserType usertype) internal {
-        Users[msg.sender] = User(name, usertype, false);
+        Users[msg.sender] = User(name, usertype, true);
     }
     
     function userVerify(address user) internal {

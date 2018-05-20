@@ -1,12 +1,12 @@
 <template>
     <div>
     <Myheader></Myheader>
-    <el-form :model="ruleForm2" status-icon ref="ruleForm2" label-width="120px" class="demo-ruleForm">
+    <el-form :model="ruleForm2" :rules="rules" status-icon ref="ruleForm2" label-width="120px" class="demo-ruleForm">
   <el-form-item label="Name" prop="name">
     <el-input v-model="ruleForm2.name" auto-complete="off"></el-input>
   </el-form-item>
   <el-form-item label="Type" prop="Type">
-      <el-select v-model="value" placeholder="Select">
+      <el-select v-model="ruleForm2.type" placeholder="Select">
     <el-option
       v-for="item in options"
       :key="item.value"
@@ -14,9 +14,6 @@
       :value="item.value">
     </el-option>
   </el-select>
-  </el-form-item>
-  <el-form-item label="Address" prop="address">
-    <el-input v-model.number="ruleForm2.age"></el-input>
   </el-form-item>
   <el-form-item>
     <el-button type="primary" @click="submitForm('ruleForm2')">Submit</el-button>
@@ -36,7 +33,6 @@ export default {
       ruleForm2: {
         name: "",
         type: "",
-        address: ""
       },
       options: [
         {
@@ -51,14 +47,30 @@ export default {
           value: "Investor",
           label: "Investor"
         }
-      ]
+      ],
+      rules:{
+          name:[{required: true, message: 'Name is required', trigger: 'change' }],
+          type:[{required: true, message: 'Type is required', trigger: 'blur' }]
+      }
     };
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+            let router = this.$router;
+          this.$store.state
+            .contractInstance()
+            .methods.UserRegister("asd", 1)
+            .send({ from: this.$store.state.web3.coinbase })
+            .on("receipt", function(receipt) {              
+              console.log(receipt);
+              router.push('/profile');
+            })
+            .on("error", function(error) {
+              // Do something to alert the user their transaction has failed
+              console.log("Register failed")
+            });
         } else {
           console.log("error submit!!");
           return false;

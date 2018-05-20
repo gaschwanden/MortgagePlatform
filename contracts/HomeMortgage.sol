@@ -10,8 +10,16 @@ contract HomeMortgage is UserRegistration, DocRegistration {
     mapping(address => uint) ownerAppCount;
     mapping(uint =>address) appToOwner;
 
-    function UserRegister(string name, UserType usertype) public {
+    function UserRegister(string name, UserType usertype) public returns (bool) {
+        if (Users[msg.sender].Verified == true) {
+            return false;
+        }
         userRegister(name, usertype);
+        return true;
+    }
+
+    function GetUser() public pure returns (string) {
+        
     }
 
     function UserVerify(address user) public onlyOwner {

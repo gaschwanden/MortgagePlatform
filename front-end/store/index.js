@@ -2,19 +2,17 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import getWeb3 from '../util/getWeb3'
 import pollWeb3 from '../util/pollWeb3'
+import getContract from '../util/getContract'
 
 Vue.use(Vuex)
 
 
 let state = {
   web3: {
-    isInjected: false,
-    web3Instance: null,
-    networkId: null,
     coinbase: null,
-    balance: null,
-    error: null
+    balance: 0
   },
+  web3Instance: null,
   contractInstance: null
 }
 
@@ -25,14 +23,10 @@ const store = () => new Vuex.Store({
     registerWeb3Instance(state, payload) {
       console.log('registerWeb3instance Mutation being executed', payload)
       let result = payload
-      let web3Copy = state.web3
-      web3Copy.coinbase = result.coinbase
-      web3Copy.networkId = result.networkId
-      web3Copy.balance = parseInt(result.balance, 10)
-      web3Copy.isInjected = result.injectedWeb3
-      web3Copy.web3Instance = result.web3
-      state.web3 = web3Copy
-      pollWeb3()
+      state.web3.coinbase = result.coinbase
+      state.web3.balance = parseInt(result.balance, 10)
+      //state.web3Instance = result.web3
+      //pollWeb3()
     },
     pollWeb3Instance(state, payload) {
       console.log('pollWeb3Instance mutation being executed', payload)
@@ -41,7 +35,7 @@ const store = () => new Vuex.Store({
     },
     registerContractInstance(state, payload) {
       console.log('Casino contract instance: ', payload)
-      state.contractInstance = () => payload
+      state.contractInstance =  () => payload
     }
   },
   actions: {
