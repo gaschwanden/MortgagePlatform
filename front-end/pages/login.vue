@@ -2,8 +2,11 @@
     <div >
     <Myheader></Myheader>
     <el-form :model="ruleForm2" status-icon ref="ruleForm2" label-width="120px" class="demo-ruleForm">
+        <el-form-item label="Name" prop="name">
+    <el-input v-model.number="ruleForm2.name"></el-input>
+  </el-form-item>
   <el-form-item label="Address" prop="address">
-    <el-input v-model.number="ruleForm2.age"></el-input>
+    <el-input v-model.number="ruleForm2.address"></el-input>
   </el-form-item>
   <el-form-item>
     <el-button type="primary" @click="submitForm('ruleForm2')">Submit</el-button>
@@ -21,24 +24,9 @@ export default {
   data() {
     return {
       ruleForm2: {
-        name: "",
-        type: "",
+        name : "",
         address: ""
       },
-      options: [
-        {
-          value: "Borrower",
-          label: "Borrower"
-        },
-        {
-          value: "Verifier",
-          label: "Verifier"
-        },
-        {
-          value: "Investor",
-          label: "Investor"
-        }
-      ]
     };
   },
   methods: {

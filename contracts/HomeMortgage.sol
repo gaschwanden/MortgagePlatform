@@ -38,16 +38,21 @@ contract HomeMortgage is UserRegistration, DocRegistration {
         
     }
 
-    function GetDocs() public view returns(uint[]) {
+    function GetDocs(address uid) public view returns(uint[]) {
         uint[] memory result = new uint[](ownerDocCount[msg.sender]);
         uint counter = 0;
         for (uint i = 0; i < documents.length; i++) {
-            if (docToOwner[i] == msg.sender) {
+            if (docToOwner[i] == uid) {
                 result[counter] = i;
                 counter++;
             }
         }
         return result;
+    }
+
+    function GetDoc(uint id) public view returns(string, uint, uint, string, bool) {
+        Document memory doc = documents[id];
+        return (doc.Name, doc.TimeStamp, uint(doc.Type), doc.SourceUrl, doc.Verified);
     }
 
     function GetApplications() public view returns(uint[]) {

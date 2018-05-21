@@ -13,8 +13,12 @@ let state = {
     balance: 0
   },
   web3Instance: null,
-  contractInstance: null
+  contractInstance: null,
+  activeIndex : "1",
+  logged : false,
 }
+
+
 
 const store = () => new Vuex.Store({
   strict: true,
@@ -35,7 +39,11 @@ const store = () => new Vuex.Store({
     },
     registerContractInstance(state, payload) {
       console.log('Casino contract instance: ', payload)
-      state.contractInstance =  () => payload
+      state.contractInstance =  () => payload;
+      state.logged = true;
+    },
+    changeActiveIndex(state,payload) {
+      state.activeIndex = payload;
     }
   },
   actions: {

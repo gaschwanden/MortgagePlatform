@@ -1,17 +1,53 @@
-const address = '0x8cdaf0cd259887258bc13a92c0a6da92698644c0'
+const address = '0xecfcab0a285d3380e488a39b4bb21e777f8a4eac';
+
 const ABI = [
 	{
 		"constant": true,
-		"inputs": [],
-		"name": "GetDocs",
+		"inputs": [
+			{
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "GetDoc",
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint256[]"
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "bool"
 			}
 		],
 		"payable": false,
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "GetUser",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "pure",
 		"type": "function"
 	},
 	{
@@ -38,6 +74,25 @@ const ABI = [
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "uid",
+				"type": "address"
+			}
+		],
+		"name": "GetDocs",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -128,7 +183,12 @@ const ABI = [
 			}
 		],
 		"name": "UserRegister",
-		"outputs": [],
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"

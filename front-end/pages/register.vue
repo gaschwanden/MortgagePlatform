@@ -32,25 +32,27 @@ export default {
     return {
       ruleForm2: {
         name: "",
-        type: "",
+        type: ""
       },
       options: [
         {
-          value: "Borrower",
+          value: "0",
           label: "Borrower"
         },
         {
-          value: "Verifier",
+          value: "1",
           label: "Verifier"
         },
         {
-          value: "Investor",
+          value: "2",
           label: "Investor"
         }
       ],
-      rules:{
-          name:[{required: true, message: 'Name is required', trigger: 'change' }],
-          type:[{required: true, message: 'Type is required', trigger: 'blur' }]
+      rules: {
+        name: [
+          { required: true, message: "Name is required", trigger: "change" }
+        ],
+        type: [{ required: true, message: "Type is required", trigger: "blur" }]
       }
     };
   },
@@ -58,18 +60,21 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-            let router = this.$router;
+          let router = this.$router;
           this.$store.state
             .contractInstance()
-            .methods.UserRegister("asd", 1)
+            .methods.UserRegister(
+              this.ruleForm2.name,
+              this.ruleForm2.type
+            )
             .send({ from: this.$store.state.web3.coinbase })
-            .on("receipt", function(receipt) {              
+            .on("receipt", function(receipt) {
               console.log(receipt);
-              router.push('/profile');
+              router.push("/profile");
             })
             .on("error", function(error) {
               // Do something to alert the user their transaction has failed
-              console.log("Register failed")
+              console.log("Register failed");
             });
         } else {
           console.log("error submit!!");

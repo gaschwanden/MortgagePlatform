@@ -21,67 +21,66 @@
 </template>
 
 <style>
-  .time {
-    font-size: 13px;
-    color: #999;
-  }
-  
-  .bottom {
-    margin-top: 13px;
-    line-height: 12px;
-  }
+.time {
+  font-size: 13px;
+  color: #999;
+}
 
-  .button {
-    padding: 0;
-    float: right;
-  }
+.bottom {
+  margin-top: 13px;
+  line-height: 12px;
+}
 
-  .image {
-    width: 100%;
-    display: block;
-  }
+.button {
+  padding: 0;
+  float: right;
+}
 
-  .clearfix:before,
-  .clearfix:after {
-      display: table;
-      content: "";
-  }
-  
-  .clearfix:after {
-      clear: both
-  }
+.image {
+  width: 100%;
+  display: block;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both;
+}
 </style>
 
 <script>
 import Myheader from "./myheader.vue";
 
 export default {
-    created() {
-        this.$store.commit("changeActiveIndex", "3");
-    },
+  beforeCreate() {
+    if (this.$store.state.logged) {
+      this.$store.commit("changeActiveIndex", "2");
+      let contract = this.$store.state.contractInstance();
+      contract.methods
+        .GetDocs(this.$store.state.web3.coinbase)
+        .call()
+        .then(function(result) {
+          for (let i = 0; i < result.length; i++) {
+            contract.methods
+              .GetDoc(result[i])
+              .call()
+              .then(function(re) {
+                console.log(re);
+              });
+          }
+        });
+    } else {
+      this.$router.push("/login");
+    }
+  },
+
   data() {
     return {
-        currentDate: new Date(),
-
-      ruleForm2: {
-        name: "",
-        type: "",
-        address: ""
-      },
-      options: [
-        {
-          value: "Id",
-          label: "Id"
-        },
-        {
-          value: "Financial",
-          label: "Financial"
-        },
-        {
-          value: "Property",
-          label: "Property"
-        }
-      ]
+      currentDate: new Date()
     };
   },
   methods: {

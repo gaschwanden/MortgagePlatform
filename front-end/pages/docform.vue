@@ -1,13 +1,14 @@
 <template>
     <div>
     <Myheader></Myheader>
-    <br>
+
     <el-form :model="ruleForm2" status-icon ref="ruleForm2" label-width="120px" class="demo-ruleForm">
+
   <el-form-item label="Name" prop="name">
     <el-input v-model="ruleForm2.name" auto-complete="off"></el-input>
   </el-form-item>
   <el-form-item label="Type" prop="Type">
-      <el-select v-model="value" placeholder="Select">
+      <el-select v-model="ruleForm2.type" placeholder="Select">
     <el-option
       v-for="item in options"
       :key="item.value"
@@ -49,30 +50,45 @@ export default {
       ruleForm2: {
         name: "",
         type: "",
-        address: ""
+        source: ""
       },
       options: [
         {
-          value: "Id",
+          value: "0",
           label: "Id"
         },
         {
-          value: "Financial",
+          value: "1",
           label: "Financial"
         },
         {
-          value: "Property",
+          value: "2",
           label: "Property"
         }
       ],
-      fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
+      fileList: []
     };
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          let router = this.$router;
+          this.$store.state
+            .contractInstance()
+            .methods.DocRegister(
+              this.ruleForm2.name,
+              this.ruleForm2.type,
+              "asdas.jpg"
+            )
+            .send({ from: this.$store.state.web3.coinbase })
+            .on("receipt", function(receipt) {
+              console.log(receipt);
+            })
+            .on("error", function(error) {
+              // Do something to alert the user their transaction has failed
+              console.log("Register failed");
+            });
         } else {
           console.log("error submit!!");
           return false;
@@ -83,17 +99,21 @@ export default {
       this.$refs[formName].resetFields();
     },
     handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
-      },
-      handleExceed(files, fileList) {
-        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-      },
-      beforeRemove(file, fileList) {
-        return this.$confirm(`确定移除 ${ file.name }？`);
-      }
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${
+          files.length
+        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+      );
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    }
   },
   components: {
     Myheader
