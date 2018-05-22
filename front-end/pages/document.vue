@@ -3,13 +3,13 @@
     <Myheader></Myheader>
     <br>
 <el-row>
-  <el-col :span="8" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
+  <el-col :span="8" v-for="doc in documents" :key="doc.name">
     <el-card :body-style="{ padding: '0px' }">
       <img src="" class="image">
       <div style="padding: 14px;">
-        <span>borrower</span>
+        <span>{{doc.name}}</span>
         <div class="bottom clearfix">
-          <time class="time">{{ currentDate }}</time>
+          <time class="time">{{ doc.sourceUrl }}</time>
         </div>
       </div>
     </el-card>
@@ -55,13 +55,25 @@
 <script>
 import Myheader from "./myheader.vue";
 
+class Document {
+  constructor(name, timestamp, type, sourceUrl, verified) {
+    this.name = name;
+    this.timestamp = timestamp;
+    this.type = type;
+    this.sourceUrl = sourceUrl;
+    this.verified = verified;
+  }
+}
+
 export default {
   beforeCreate() {
-    if (this.$store.state.logged) {
-      this.$store.commit("changeActiveIndex", "2");
-      let contract = this.$store.state.contractInstance();
+    let documents = new Array();
+    let store = this.$store;
+    if (store.state.logged) {
+      store.commit("changeActiveIndex", "2");
+      let contract = store.state.contractInstance();
       contract.methods
-        .GetDocs(this.$store.state.web3.coinbase)
+        .GetDocs(store.state.web3.coinbase)
         .call()
         .then(function(result) {
           for (let i = 0; i < result.length; i++) {
@@ -69,9 +81,11 @@ export default {
               .GetDoc(result[i])
               .call()
               .then(function(re) {
-                console.log(re);
+                documents.push(new Document(re[0], re[1], re[2], re[3], re[4]));
               });
           }
+          console.log(documents);
+          store.commit("updateDocs", { documents });
         });
     } else {
       this.$router.push("/login");
@@ -80,7 +94,8 @@ export default {
 
   data() {
     return {
-      currentDate: new Date()
+      currentDate: new Date(),
+      documents: this.$store.state.documents
     };
   },
   methods: {

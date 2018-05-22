@@ -16,8 +16,8 @@ let state = {
   contractInstance: null,
   activeIndex : "1",
   logged : false,
+  documents : null
 }
-
 
 
 const store = () => new Vuex.Store({
@@ -44,7 +44,11 @@ const store = () => new Vuex.Store({
     },
     changeActiveIndex(state,payload) {
       state.activeIndex = payload;
-    }
+    },
+    updateDocs(state, payload) {
+      console.log(payload);
+      state.documents = payload.documents;
+    },
   },
   actions: {
     registerWeb3({ commit }) {
