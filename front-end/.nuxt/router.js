@@ -3,15 +3,15 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-const _1c8f7804 = () => import('../pages/register.vue' /* webpackChunkName: "pages/register" */).then(m => m.default || m)
-const _c217e4cc = () => import('../pages/myheader.vue' /* webpackChunkName: "pages/myheader" */).then(m => m.default || m)
-const _5fab9c50 = () => import('../pages/login.vue' /* webpackChunkName: "pages/login" */).then(m => m.default || m)
-const _2a8a1e7c = () => import('../pages/document.vue' /* webpackChunkName: "pages/document" */).then(m => m.default || m)
-const _6bca1eff = () => import('../pages/application.vue' /* webpackChunkName: "pages/application" */).then(m => m.default || m)
-const _324985aa = () => import('../pages/docform.vue' /* webpackChunkName: "pages/docform" */).then(m => m.default || m)
-const _3b023146 = () => import('../pages/market.vue' /* webpackChunkName: "pages/market" */).then(m => m.default || m)
-const _6991f258 = () => import('../pages/profile.vue' /* webpackChunkName: "pages/profile" */).then(m => m.default || m)
-const _06828ec1 = () => import('../pages/index.vue' /* webpackChunkName: "pages/index" */).then(m => m.default || m)
+const _4a8234eb = () => import('../pages/register.vue' /* webpackChunkName: "pages/register" */).then(m => m.default || m)
+const _66326afe = () => import('../pages/myheader.vue' /* webpackChunkName: "pages/myheader" */).then(m => m.default || m)
+const _1330135e = () => import('../pages/login.vue' /* webpackChunkName: "pages/login" */).then(m => m.default || m)
+const _587cdb63 = () => import('../pages/document.vue' /* webpackChunkName: "pages/document" */).then(m => m.default || m)
+const _7676e4b8 = () => import('../pages/application.vue' /* webpackChunkName: "pages/application" */).then(m => m.default || m)
+const _74b9c764 = () => import('../pages/docform.vue' /* webpackChunkName: "pages/docform" */).then(m => m.default || m)
+const _f80c9bf8 = () => import('../pages/market.vue' /* webpackChunkName: "pages/market" */).then(m => m.default || m)
+const _111f06de = () => import('../pages/profile.vue' /* webpackChunkName: "pages/profile" */).then(m => m.default || m)
+const _2cc0533a = () => import('../pages/index.vue' /* webpackChunkName: "pages/index" */).then(m => m.default || m)
 
 
 
@@ -73,47 +73,47 @@ export function createRouter () {
     routes: [
 		{
 			path: "/register",
-			component: _1c8f7804,
+			component: _4a8234eb,
 			name: "register"
 		},
 		{
 			path: "/myheader",
-			component: _c217e4cc,
+			component: _66326afe,
 			name: "myheader"
 		},
 		{
 			path: "/login",
-			component: _5fab9c50,
+			component: _1330135e,
 			name: "login"
 		},
 		{
 			path: "/document",
-			component: _2a8a1e7c,
+			component: _587cdb63,
 			name: "document"
 		},
 		{
 			path: "/application",
-			component: _6bca1eff,
+			component: _7676e4b8,
 			name: "application"
 		},
 		{
 			path: "/docform",
-			component: _324985aa,
+			component: _74b9c764,
 			name: "docform"
 		},
 		{
 			path: "/market",
-			component: _3b023146,
+			component: _f80c9bf8,
 			name: "market"
 		},
 		{
 			path: "/profile",
-			component: _6991f258,
+			component: _111f06de,
 			name: "profile"
 		},
 		{
 			path: "/",
-			component: _06828ec1,
+			component: _2cc0533a,
 			name: "index"
 		}
     ],
