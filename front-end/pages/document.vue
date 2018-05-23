@@ -3,7 +3,7 @@
     <Myheader></Myheader>
     <br>
 <el-row>
-  <el-col :span="8" v-for="doc in documents" :key="doc.name">
+  <el-col :span="8" v-for="(doc, index) in documents" :key="doc.name" :offset="index > 0 ? 2 : 0">
     <el-card :body-style="{ padding: '0px' }">
       <img src="" class="image">
       <div style="padding: 14px;">
@@ -54,20 +54,12 @@
 
 <script>
 import Myheader from "./myheader.vue";
+import {Document} from "../store/index.js"
 
-class Document {
-  constructor(name, timestamp, type, sourceUrl, verified) {
-    this.name = name;
-    this.timestamp = timestamp;
-    this.type = type;
-    this.sourceUrl = sourceUrl;
-    this.verified = verified;
-  }
-}
 
 export default {
   beforeCreate() {
-    let documents = new Array();
+    var documents = [];
     let store = this.$store;
     if (store.state.logged) {
       store.commit("changeActiveIndex", "2");
@@ -82,10 +74,9 @@ export default {
               .call()
               .then(function(re) {
                 documents.push(new Document(re[0], re[1], re[2], re[3], re[4]));
+                store.commit("updateDocs", documents);
               });
           }
-          console.log(documents);
-          store.commit("updateDocs", { documents });
         });
     } else {
       this.$router.push("/login");
@@ -95,8 +86,13 @@ export default {
   data() {
     return {
       currentDate: new Date(),
-      documents: this.$store.state.documents
     };
+  },
+    computed: {
+    documents() {
+    //   console.log(this.$store.state.documents);
+      return this.$store.state.documents
+    }
   },
   methods: {
     submitForm(formName) {

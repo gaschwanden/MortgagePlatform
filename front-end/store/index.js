@@ -6,6 +6,15 @@ import getContract from '../util/getContract'
 
 Vue.use(Vuex)
 
+export class Document {
+  constructor(name, timestamp, type, sourceUrl, verified) {
+    this.name = name;
+    this.timestamp = timestamp;
+    this.type = type;
+    this.sourceUrl = sourceUrl;
+    this.verified = verified;
+  }
+}
 
 let state = {
   web3: {
@@ -46,8 +55,13 @@ const store = () => new Vuex.Store({
       state.activeIndex = payload;
     },
     updateDocs(state, payload) {
-      console.log(payload);
-      state.documents = payload.documents;
+      let documents = [];
+      for(let i =0; i < payload.length; i++) {
+        documents.push(new Document(payload[i].name, payload[i].timestamp, payload[i].type, payload[i].sourceUrl,
+          payload[i].verified));
+      }
+      // console.log(documents);
+      state.documents = documents;
     },
   },
   actions: {
@@ -71,5 +85,6 @@ const store = () => new Vuex.Store({
     }
   }
 })
+
 
 export default store;
