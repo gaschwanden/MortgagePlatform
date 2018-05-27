@@ -7,7 +7,8 @@ import getContract from '../util/getContract'
 Vue.use(Vuex)
 
 export class Document {
-  constructor(name, timestamp, type, sourceUrl, verified) {
+  constructor(id, name, timestamp, type, sourceUrl, verified) {
+    this.id = id;
     this.name = name;
     this.timestamp = timestamp;
     this.type = type;
@@ -57,10 +58,10 @@ const store = () => new Vuex.Store({
     updateDocs(state, payload) {
       let documents = [];
       for(let i =0; i < payload.length; i++) {
-        documents.push(new Document(payload[i].name, payload[i].timestamp, payload[i].type, payload[i].sourceUrl,
+        documents.push(new Document(payload[i].id, payload[i].name, payload[i].timestamp, payload[i].type, payload[i].sourceUrl,
           payload[i].verified));
       }
-      // console.log(documents);
+      console.log(documents);
       state.documents = documents;
     },
   },

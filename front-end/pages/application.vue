@@ -39,22 +39,28 @@ export default {
         type: "",
         address: ""
       },
-      options: [
-        {
-          value: "Id",
-          label: "Id"
-        },
-        {
-          value: "Financial",
-          label: "Financial"
-        },
-        {
-          value: "Property",
-          label: "Property"
-        }
-      ]
     };
   },
+
+computed: {
+    options() {
+      let documents = this.$store.state.documents;
+      if (documents != null) {
+        let options = [];
+        for (let i=0; i<documents.length; i++) {
+            if (documents[i].type == 2) {
+                options.push({value:documents[i].id, label:documents[i].name})
+            }
+        }
+        return options;
+      } 
+      else {
+          return null;
+      }
+      
+    },
+},
+
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {

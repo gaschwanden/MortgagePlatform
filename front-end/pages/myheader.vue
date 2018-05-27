@@ -5,7 +5,8 @@
   <el-menu-item index="2">Document</el-menu-item>
   <el-menu-item index="3">Market</el-menu-item>
   <el-menu-item index="4">Application</el-menu-item>
-  <el-button type="danger" icon="el-icon-setting" circle></el-button>
+  <el-button type="primary" icon="el-icon-circle-plus" circle v-on:click="newDoc"></el-button>
+  <el-button type="primary" icon="el-icon-setting" circle></el-button>
  
 </el-menu>
   <br>
@@ -48,6 +49,9 @@ export default {
         default:
           break;
       }
+    },
+    newDoc() {
+      this.$router.push("/docform");
     }
   },
   computed: {
