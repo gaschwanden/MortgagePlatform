@@ -17,6 +17,15 @@ export class Document {
   }
 }
 
+export class Application {
+  constructor(docs, totalAmount, duration, interests) {
+    this.docs = docs;
+    this.totalAmount = totalAmount;
+    this.duration = duration;
+    this.interests = interests;
+  }
+}
+
 let state = {
   web3: {
     coinbase: null,
@@ -24,9 +33,11 @@ let state = {
   },
   web3Instance: null,
   contractInstance: null,
-  activeIndex : "1",
-  logged : false,
-  documents : null
+  activeIndex: "1",
+  logged: false,
+  documents: null,
+  applications: null,
+
 }
 
 
@@ -49,20 +60,26 @@ const store = () => new Vuex.Store({
     },
     registerContractInstance(state, payload) {
       console.log('Casino contract instance: ', payload)
-      state.contractInstance =  () => payload;
+      state.contractInstance = () => payload;
       state.logged = true;
     },
-    changeActiveIndex(state,payload) {
+    changeActiveIndex(state, payload) {
       state.activeIndex = payload;
     },
     updateDocs(state, payload) {
       let documents = [];
-      for(let i =0; i < payload.length; i++) {
+      for (let i = 0; i < payload.length; i++) {
         documents.push(new Document(payload[i].id, payload[i].name, payload[i].timestamp, payload[i].type, payload[i].sourceUrl,
           payload[i].verified));
       }
-      console.log(documents);
       state.documents = documents;
+    },
+    updateApps(state, payload) {
+      let applications = [];
+      for (let i = 0; i < payload.length; i++) {
+        applications.push(new Application(payload[i].docs, payload[i].totalAmount, payload[i].duration, payload[i].interests));
+      }
+      state.applications = applications;
     },
   },
   actions: {
@@ -83,7 +100,51 @@ const store = () => new Vuex.Store({
       getContract.then(result => {
         commit('registerContractInstance', result)
       }).catch(e => console.log(e))
-    }
+    },
+    updateDocs({ commit }) {
+      let documents = [];
+      if (this.state.contractInstance == null)
+        return;
+      let contract = this.state.contractInstance();
+      contract.methods
+        .GetDocs(this.state.web3.coinbase)
+        .call()
+        .then(function (result) {
+          for (let i = 0; i < result.length; i++) {
+            contract.methods
+              .GetDoc(result[i])
+              .call()
+              .then(function (re) {
+                documents.push(
+                  new Document(result[i], re[0], re[1], re[2], re[3], re[4])
+                );
+                commit('updateDocs', documents);
+              });
+          }
+        })
+    },
+    updateApps({ commit }) {
+      let documents = [];
+      if (this.state.contractInstance == null)
+        return;
+      let contract = this.state.contractInstance();
+      contract.methods
+        .GetDocs(this.state.web3.coinbase)
+        .call()
+        .then(function (result) {
+          for (let i = 0; i < result.length; i++) {
+            contract.methods
+              .GetDoc(result[i])
+              .call()
+              .then(function (re) {
+                documents.push(
+                  new Document(result[i], re[0], re[1], re[2], re[3], re[4])
+                );
+                commit('updateDocs', documents);
+              });
+          }
+        })
+    },
   }
 })
 

@@ -2,65 +2,73 @@
     <div>
     <Myheader></Myheader>
     <br>
-    <el-form :model="ruleForm2" status-icon ref="ruleForm2" label-width="120px" class="demo-ruleForm">
-  <el-form-item label="Property" prop="Property">
-      <el-select v-model="value" placeholder="Select Property">
-    <el-option
-      v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select>
-  </el-form-item>
-    <el-form-item label="Duration(days)" prop="duration">
-    <el-input v-model="ruleForm2.name" auto-complete="off"></el-input>
-  </el-form-item>
-  <el-form-item label="Interests per day" prop="interests">
-    <el-input v-model="ruleForm2.name" auto-complete="off"></el-input>
-  </el-form-item>
-  <el-form-item>
-    <el-button type="primary" @click="submitForm('ruleForm2')">Submit</el-button>
-    <el-button @click="resetForm('ruleForm2')">Reset</el-button>
-  </el-form-item>
-</el-form>
+<el-row> 
+      <el-button type="primary" icon="el-icon-circle-plus" circle v-on:click="plusClick" style="float:right"></el-button>
+  <el-col :span="8" v-for="(app) in applications" :key="app.docs[0]" :offset="2">
+    <el-card :body-style="{ padding: '0px' }">
+      <div style="padding: 14px;" >
+        <span>{{app.totalAmount}}</span> 
+        <div class="bottom clearfix">
+          <img :src="s" class="image">
+        </div>
+        <span>{{app.duration}}</span>        
+      </div>
+    </el-card>
+  </el-col>
+</el-row>
+
     </div>
 
 </template>
 
+<style>
+
+.bottom {
+  margin-top: 13px;
+  line-height: 12px;
+}
+
+.button {
+  padding: 0;
+  float: right;
+}
+
+.image {
+  width: 100%;
+  display: block;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both;
+}
+</style>
+
 <script>
 import Myheader from "./myheader.vue";
+import {Application} from "../store/index.js"
+
 
 export default {
-  data() {
-    return {
-      ruleForm2: {
-        name: "",
-        type: "",
-        address: ""
-      },
-    };
+  beforeCreate() {
+    this.$store.commit("changeActiveIndex", "4");
   },
 
-computed: {
-    options() {
-      let documents = this.$store.state.documents;
-      if (documents != null) {
-        let options = [];
-        for (let i=0; i<documents.length; i++) {
-            if (documents[i].type == 2) {
-                options.push({value:documents[i].id, label:documents[i].name})
-            }
-        }
-        return options;
-      } 
-      else {
-          return null;
-      }
-      
-    },
-},
-
+  data() {
+    return {
+      currentDate: new Date(),
+    };
+  },
+    computed: {
+    applications() {
+      return this.$store.state.applications
+    }
+  },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -74,6 +82,9 @@ computed: {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    plusClick() {
+      this.$router.push("/applyform");
     }
   },
   components: {

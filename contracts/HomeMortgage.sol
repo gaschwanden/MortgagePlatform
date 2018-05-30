@@ -4,9 +4,8 @@ import "./UserRegistration.sol";
 import "./DocRegistration.sol";
 import "./Application.sol";
 
-contract HomeMortgage is UserRegistration, DocRegistration {
+contract HomeMortgage is UserRegistration, DocRegistration, Application {
 
-    Application[] public Applications;
     mapping(address => uint) ownerAppCount;
     mapping(uint =>address) appToOwner;
 
@@ -55,22 +54,34 @@ contract HomeMortgage is UserRegistration, DocRegistration {
         return (doc.Name, doc.TimeStamp, uint(doc.Type), doc.SourceUrl, doc.Verified);
     }
 
+
     function GetApplications() public view returns(uint[]) {
         uint[] memory result = new uint[](ownerAppCount[msg.sender]);
         uint counter = 0;
-        for (uint i = 0; i < Applications.length; i++) {
-            if (appToOwner[i] == msg.sender) {
-                result[counter] = i;
-                counter++;
+        if (Users[msg.sender].Type == UserType.Borrower){
+            for (uint i = 0; i < applications.length; i++) {
+                if (appToOwner[i] == msg.sender) {
+                    result[counter] = i;
+                    counter++;
+                }
+            }
+        }
+        else if(Users[msg.sender].Type == UserType.Investor) {
+            for (uint j = 0; j < applications.length; j++) {
+                    result[j] = j;
             }
         }
         return result;
     }
 
+    function GetAppication(uint id) public view returns(uint[], uint, uint, uint) {
+        Application memory app = applications[id];
+        return (app.Docs, app.TotalAmount, app.Duration, app.Interests);
+    }
+
     function Apply(uint[] docs, uint totalAmount, uint duration, uint interests) public {
         require(checkQualification(docs));
-        Application app = new Application(msg.sender, docs, totalAmount, duration, interests);
-        Applications.push(app);
+        apply(msg.sender, docs, totalAmount, duration, interests);
     }
 
 

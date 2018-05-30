@@ -3,7 +3,6 @@ pragma solidity ^0.4.21;
 contract Escrow {
 
     address Borrower;
-    address Arbiter;
     uint TotalAmount;
     uint CurAmount;
     uint StartTime;
@@ -11,9 +10,8 @@ contract Escrow {
     uint Interests;
     mapping (address=>uint) InvestedAmount;
 
-    constructor (address borrower, address arbiter, uint totalAmount, uint duration, uint interests) public {
+    constructor (address borrower, uint totalAmount, uint duration, uint interests) public {
         Borrower = borrower;
-        Arbiter = arbiter;
         TotalAmount = totalAmount;
         CurAmount = 0;
         StartTime = 0;

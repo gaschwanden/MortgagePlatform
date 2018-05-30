@@ -84,10 +84,11 @@ export default {
             .send({ from: this.$store.state.web3.coinbase })
             .on("receipt", function(receipt) {
               console.log(receipt);
+              this.$router.push("/document");
             })
             .on("error", function(error) {
               // Do something to alert the user their transaction has failed
-              console.log("Register failed");
+              console.log("Register failed", error);
             });
         } else {
           console.log("error submit!!");

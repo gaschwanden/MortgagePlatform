@@ -5,7 +5,6 @@
   <el-menu-item index="2">Document</el-menu-item>
   <el-menu-item index="3">Market</el-menu-item>
   <el-menu-item index="4">Application</el-menu-item>
-  <el-button type="primary" icon="el-icon-circle-plus" circle v-on:click="newDoc"></el-button>
   <el-button type="primary" icon="el-icon-setting" circle></el-button>
  
 </el-menu>
@@ -14,11 +13,36 @@
 </template> 
 
 <script>
+import {Document, Application} from "../store/index.js"
+
+
 export default {
   beforeCreate() {
     if (this.$store.state.web3.coinbase == null) {
       this.$store.dispatch("registerWeb3");
       this.$store.dispatch("getContractInstance");
+
+        // if (store.state.applications == null) {
+        //   var applications = [];
+        //   let contract = store.state.contractInstance();
+        //   contract.methods
+        //     .GetDocs(store.state.web3.coinbase)
+        //     .call()
+        //     .then(function(result) {
+        //       for (let i = 0; i < result.length; i++) {
+        //         contract.methods
+        //           .GetDoc(result[i])
+        //           .call()
+        //           .then(function(re) {
+        //             applications.push(
+        //               new Application(re[0], re[1], re[2], re[3], re[4])
+        //             );
+        //             store.commit("updateApps", applications);
+        //           });
+        //       }
+        //     });
+        // }
+
     }
   },
 
@@ -49,9 +73,6 @@ export default {
         default:
           break;
       }
-    },
-    newDoc() {
-      this.$router.push("/docform");
     }
   },
   computed: {

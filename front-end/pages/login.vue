@@ -8,6 +8,16 @@
   <el-form-item label="Address" prop="address">
     <el-input v-model.number="ruleForm2.address"></el-input>
   </el-form-item>
+    <el-form-item label="Type" prop="Type">
+      <el-select v-model="ruleForm2.type" placeholder="Select">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+  </el-form-item>
   <el-form-item>
     <el-button type="primary" @click="submitForm('ruleForm2')">Submit</el-button>
     <el-button @click="resetForm('ruleForm2')">Reset</el-button>
@@ -25,15 +35,46 @@ export default {
     return {
       ruleForm2: {
         name : "",
-        address: ""
+        address: "",
+        type:"",
       },
+      options: [
+        {
+          value: "0",
+          label: "Borrower"
+        },
+        {
+          value: "1",
+          label: "Verifier"
+        },
+        {
+          value: "2",
+          label: "Investor"
+        }
+      ],
     };
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          let router = this.$router;
+          this.$store.state
+            .contractInstance()
+            .methods.DocRegister(
+              this.ruleForm2.name,
+              this.ruleForm2.type,
+              "asdas.jpg"
+            )
+            .send({ from: this.$store.state.web3.coinbase })
+            .on("receipt", function(receipt) {
+              console.log(receipt);
+              this.$router.push("/document");
+            })
+            .on("error", function(error) {
+              // Do something to alert the user their transaction has failed
+              console.log("Register failed", error);
+            });
         } else {
           console.log("error submit!!");
           return false;
