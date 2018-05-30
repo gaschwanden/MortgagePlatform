@@ -4,7 +4,7 @@ import "./UserRegistration.sol";
 import "./DocRegistration.sol";
 import "./Application.sol";
 
-contract HomeMortgage is UserRegistration, DocRegistration, Application {
+contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable {
 
     mapping(address => uint) ownerAppCount;
     mapping(uint =>address) appToOwner;
@@ -54,6 +54,10 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application {
         return (doc.Name, doc.TimeStamp, uint(doc.Type), doc.SourceUrl, doc.Verified);
     }
 
+    function GetDangerousApplications() public view returns(uint[]) {
+
+    }
+
 
     function GetApplications() public view returns(uint[]) {
         uint[] memory result = new uint[](ownerAppCount[msg.sender]);
@@ -80,39 +84,42 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application {
     }
 
     function Apply(uint[] docs, uint totalAmount, uint duration, uint interests) public {
-        require(checkQualification(docs));
         apply(msg.sender, docs, totalAmount, duration, interests);
     }
 
-
-
-    function checkQualification(uint[] docs) private view returns (bool) {
-        Document memory doc;
-        bool idChecked = false;
-        bool financialChecked = false;
-        bool propertyChecked = false;
-
-        for (uint i = 0; i < docs.length; i++) {
-            doc = documents[docs[i]];
-            if (!doc.Verified) {
-                return false;
+    function Invest(uint appId, uint curTime) public payable {
+        Application app = applications[appId];
+        if(app.Status == AppStatus.Funding) {
+            if (curTime - app.StartTime > app.Duration) {
+                app.Status = AppStatus.Failed;
+                refundToBuyer(msg.value, msg.sender);
             }
-            if(doc.Type == DocType.Id){
-                idChecked = true;
-            }
-            if(doc.Type == DocType.Financial){
-                financialChecked = true;
-            }
-            if(doc.Type == DocType.Property){
-                propertyChecked = true;
+            else {
+                invest(appId, msg.value);
             }
         }
-        if (idChecked && financialChecked && propertyChecked) {
-            return true;
-        }
-        else {
-            return false;
-        }
+    }
+
+    //Only owner of the contract can fail an application because of out of time.
+    function FailApplication(uint appId) public onlyOwner {
+        Application app = applications[appId];
+        app.Status = AppStatus.Failed;
+        for (uint i = 0; i < app.InvestedAddress.length; i++) {
+                refundToBuyer(app.InvestedAmount[app.InvestedAddress[i]], app.InvestedAddress[i]);
+            }
+    }
+
+    function RepossessProperty(uint appId) public onlyOwner {
+        Application app = applications[appId];
+        app.Status = AppStatus.Repossessed;
+    }
+
+    function Repay(uint appId) public payable {
+        
+    }
+
+    function refundToBuyer(uint amount, address to) private {
+        to.transfer(amount);
     }
     
 }
