@@ -6,7 +6,7 @@ import getContract from '../util/getContract'
 
 Vue.use(Vuex)
 
-export class Document {
+class Document {
   constructor(id, name, timestamp, type, sourceUrl, verified) {
     this.id = id;
     this.name = name;
@@ -17,12 +17,18 @@ export class Document {
   }
 }
 
-export class Application {
-  constructor(docs, totalAmount, duration, interests) {
+class Application {
+  constructor(applicant, docs, totalAmount, curAmount, createdTime, startTime, duration, interests, status, address) {
+    this.applicant = applicant,
     this.docs = docs;
     this.totalAmount = totalAmount;
+    this.curAmount = curAmount;
+    this.createdTime = createdTime;
+    this.startTime = startTime;
     this.duration = duration;
     this.interests = interests;
+    this.status = status;
+    this.investedAddress = address;
   }
 }
 
@@ -36,8 +42,8 @@ let state = {
   activeIndex: "1",
   logged: false,
   documents: null,
-  applications: null,
-
+  myApplications: null,
+  allApplications: null,
 }
 
 
@@ -74,12 +80,12 @@ const store = () => new Vuex.Store({
       }
       state.documents = documents;
     },
-    updateApps(state, payload) {
+    updateMyApps(state, payload) {
       let applications = [];
       for (let i = 0; i < payload.length; i++) {
-        applications.push(new Application(payload[i].docs, payload[i].totalAmount, payload[i].duration, payload[i].interests));
+        applications.push(new Application(payload[i].applicant, payload[i].docs, payload[i].totalAmount, payload[i].curAmount, payload[i].createdTime, payload[i].startTime, payload[i].duration, payload[i].interests, payload[i].status, payload[i].investedAddress));
       }
-      state.applications = applications;
+      state.myApplications = applications;
     },
   },
   actions: {
@@ -123,24 +129,26 @@ const store = () => new Vuex.Store({
           }
         })
     },
-    updateApps({ commit }) {
-      let documents = [];
+    updateMyApps({ commit }) {
+      let applications = [];
       if (this.state.contractInstance == null)
         return;
       let contract = this.state.contractInstance();
       contract.methods
-        .GetDocs(this.state.web3.coinbase)
+        .GetApplications(this.state.web3.coinbase)
         .call()
         .then(function (result) {
+          console.log(result)
           for (let i = 0; i < result.length; i++) {
             contract.methods
-              .GetDoc(result[i])
+              .GetApplication(result[i])
               .call()
               .then(function (re) {
-                documents.push(
-                  new Document(result[i], re[0], re[1], re[2], re[3], re[4])
+                console.log(re)
+                applications.push(
+                  new Application(re[0], re[1], re[2], re[3], re[4], re[5], re[6], re[7], re[8], re[9], re[10])
                 );
-                commit('updateDocs', documents);
+                commit('updateMyApps', applications);
               });
           }
         })

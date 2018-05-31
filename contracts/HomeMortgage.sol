@@ -59,36 +59,41 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
 
     }
 
-
-    function GetApplications() public view returns(uint[]) {
+    //Get all applications that are still funding
+    function GetAvailableApplications() public view returns(uint[]) {
         uint[] memory result = new uint[](ownerAppCount[msg.sender]);
         uint counter = 0;
-        if (Users[msg.sender].Type == UserType.Borrower){
-            for (uint i = 0; i < applications.length; i++) {
-                if (appToOwner[i] == msg.sender) {
-                    result[counter] = i;
-                    counter++;
-                }
+        for (uint j = 0; j < applications.length; j++) {
+            if(applications[j].Status == AppStatus.Funding && appToOwner[j] != msg.sender) {
+                result[j] = j;
             }
+        return result;
         }
-        else if(Users[msg.sender].Type == UserType.Investor) {
-            for (uint j = 0; j < applications.length; j++) {
-                if(applications[j].Status == AppStatus.Funding) {
-                    result[j] = j;
-                }
+    }
+
+    //Get all applications of a user
+    function GetApplications(address uid) public view returns(uint[]) {
+        uint[] memory result = new uint[](ownerAppCount[msg.sender]);
+        uint counter = 0;
+        for (uint i = 0; i < applications.length; i++) {
+            if (appToOwner[i] == uid) {
+                result[counter] = i;
+                counter++;
             }
         }
         return result;
     }
 
-    function GetAppication(uint id) public view returns(address, uint[], uint, uint, uint,uint, uint, uint, uint, address[]) {
+    function GetApplication(uint id) public view returns(address, uint[], uint, uint, uint,uint, uint, uint, uint, address[]) {
         Application memory app = applications[id];
-        return (app.Applicant, app.Docs, app.TotalAmount, app.CurAmount, 
+        return (app.Applicant, app.Docs, app.TotalAmount, app.CurAmount,
         app.CreatedTime, app.StartTime, app.Duration, app.Interests, uint(app.Status), app.InvestedAddress);
     }
 
     function Apply(uint[] docs, uint totalAmount, uint curTime, uint duration, uint interests) public {
-        apply(msg.sender, docs, totalAmount, curTime, duration, interests);
+        uint id = apply(msg.sender, docs, totalAmount, curTime, duration, interests);
+        ownerAppCount[msg.sender]++;
+        appToOwner[id] = msg.sender;
     }
 
     function Invest(uint appId, uint curTime) public payable {

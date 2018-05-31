@@ -79,7 +79,7 @@ computed: {
               this.ruleForm2.duration,
               this.ruleForm2.interests,
             )
-            .send({ from: this.$store.state.web3.coinbase, gas: 4000000, gasPrice: 1000000000 })
+            .send({ from: this.$store.state.web3.coinbase })
             .on("receipt", function(receipt) {
               console.log(receipt);
             })

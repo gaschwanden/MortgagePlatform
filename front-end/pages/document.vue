@@ -5,16 +5,17 @@
 <el-row> 
     <el-button type="primary" icon="el-icon-circle-plus" circle v-on:click="plusClick" style="float:right"></el-button>
   <el-col :span="8" v-for="(doc) in documents" :key="doc.id" :offset="2">
-    <el-card :body-style="{ padding: '0px' }">
+    <el-card>
       <div style="padding: 14px;" >
-        <span>{{doc.name}}</span> 
-        <div class="bottom clearfix">
+        <div class="title">
+          <span v-if="doc.verified"><el-button  type="success" style="float: right" icon="el-icon-success">Verified</el-button></span> 
+          <span v-else><el-button type="warning" icon="el-icon-warning" style="float:right">Unverified</el-button></span>
+          <span >{{doc.name}}</span> 
+        </div>
+        <div class="bottom">
           <img :src="doc.sourceUrl" class="image">
         </div>
         <span>{{doc.type}}</span>
-        <span v-if="doc.verified"><el-button  type="success" icon="el-icon-success" style="margin-left: 180px;" circle>Verified</el-button></span> 
-        <span v-else><el-button type="warning" icon="el-icon-warning" style="margin-left: 180px;" circle>Unverified</el-button></span>
-        
       </div>
     </el-card>
   </el-col>
@@ -25,10 +26,14 @@
 </template>
 
 <style>
+.title {
+  line-height: 12px;
+}
 
 .bottom {
-  margin-top: 13px;
+  margin-top: 18px;
   line-height: 12px;
+  margin-bottom:10px;
 }
 
 .button {

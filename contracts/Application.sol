@@ -20,7 +20,7 @@ contract Application {
         uint CreatedTime;   //date.valueof()
         uint StartTime;     //
         uint Duration;      //second
-        uint Interests;     // %%
+        uint Interests;     // %
         uint RepayedAmount;
         AppStatus Status;
         address[] InvestedAddress;
@@ -29,7 +29,7 @@ contract Application {
 
     Application[] internal applications;
 
-   function apply(address applicant, uint[] docs, uint totalAmount, uint createdTime, uint duration, uint interests) internal {
+   function apply(address applicant, uint[] docs, uint totalAmount, uint createdTime, uint duration, uint interests) internal returns(uint){
        Application memory app;
        app.Applicant = applicant;
        app.Docs = docs;
@@ -38,7 +38,8 @@ contract Application {
        app.Duration = duration;
        app.Interests = interests;
        app.Status = AppStatus.Funding;
-       applications.push(app);
+       uint id = applications.push(app);
+       return id;
     }
 
     function invest(Application storage app, uint amount, uint time) internal returns(uint) {
