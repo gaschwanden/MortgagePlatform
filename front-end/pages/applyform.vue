@@ -69,15 +69,17 @@ computed: {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let router = this.$router;
+          let date = new Date();
           this.$store.state
             .contractInstance()
             .methods.Apply(
               [this.ruleForm2.property],
               this.ruleForm2.totalAmount,
+              date.valueOf(),
               this.ruleForm2.duration,
               this.ruleForm2.interests,
             )
-            .send({ from: this.$store.state.web3.coinbase, gas: 471238, gasPrice: 100000000000 })
+            .send({ from: this.$store.state.web3.coinbase, gas: 4000000, gasPrice: 1000000000 })
             .on("receipt", function(receipt) {
               console.log(receipt);
             })

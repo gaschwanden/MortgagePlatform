@@ -28,8 +28,8 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
         userVerify(user);
     }
 
-    function DocRegister(string name, DocType doctype, string source) public {
-        docRegister(name, doctype, source);
+    function DocRegister(string name, uint curTime, DocType doctype, string source) public {
+        docRegister(name, curTime, doctype, source);
     }
 
     function DocVerify(uint docId) public {

@@ -17,8 +17,8 @@ contract DocRegistration {
     mapping(uint =>address) docToOwner;
     mapping(address => uint) ownerDocCount;
 
-    function docRegister(string name, DocType doctype, string source) internal {
-        uint id = documents.push(Document(name, now, doctype, source, false));
+    function docRegister(string name, uint curTime, DocType doctype, string source) internal {
+        uint id = documents.push(Document(name, curTime, doctype, source, false));
         docToOwner[id] = msg.sender;
         ownerDocCount[msg.sender]++;
     }

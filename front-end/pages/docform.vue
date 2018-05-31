@@ -74,10 +74,12 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let router = this.$router;
+          let date = new Date();
           this.$store.state
             .contractInstance()
             .methods.DocRegister(
               this.ruleForm2.name,
+              date.valueOf(),
               this.ruleForm2.type,
               "asdas.jpg"
             )
