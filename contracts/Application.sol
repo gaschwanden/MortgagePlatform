@@ -1,8 +1,5 @@
 pragma solidity ^0.4.21;
 
-import "./Escrow.sol";
-import "./DocRegistration.sol";
-
 //Also serve as escrow contract
 
 contract Application {
@@ -23,25 +20,33 @@ contract Application {
         uint CreatedTime;   //date.valueof()
         uint StartTime;     //
         uint Duration;      //second
-        uint RepayDuration;  //second
         uint Interests;     // %%
         uint RepayedAmount;
         AppStatus Status;
-        mapping (address=>uint) InvestedAmount;
         address[] InvestedAddress;
+        mapping (address=>uint) InvestedAmount;
     }
 
     Application[] internal applications;
 
-   function apply(address applicant, uint[] docs, uint totalAmount, uint startTime, uint duration, uint interests) internal {
-       applications.push(Application(applicant, docs, totalAmount, 0, startTime, duration, interests, AppStatus.Funding));
+   function apply(address applicant, uint[] docs, uint totalAmount, uint createdTime, uint duration, uint interests) internal {
+       Application memory app;
+       app.Applicant = applicant;
+       app.Docs = docs;
+       app.TotalAmount = totalAmount;
+       app.CreatedTime = createdTime;
+       app.Duration = duration;
+       app.Interests = interests;
+       app.Status = AppStatus.Funding;
+       applications.push(app);
     }
 
-    function invest(Application app, uint amount) internal returns(uint) {
+    function invest(Application storage app, uint amount, uint time) internal returns(uint) {
         app.CurAmount += amount;
         app.InvestedAmount[msg.sender] += amount;
         uint left = app.TotalAmount - app.CurAmount;
         if (left > 0) {
+            app.StartTime = time;
             app.Status = AppStatus.Repayment;
         }
     }

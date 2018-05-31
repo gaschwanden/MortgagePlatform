@@ -1,7 +1,7 @@
 pragma solidity ^0.4.21;
 
 
-contract DocRegistration{
+contract DocRegistration {
     
     enum DocType {Id, Financial, Property}
 

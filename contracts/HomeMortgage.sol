@@ -3,6 +3,7 @@ pragma solidity ^0.4.21;
 import "./UserRegistration.sol";
 import "./DocRegistration.sol";
 import "./Application.sol";
+import "./Ownable.sol";
 
 contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable {
 
@@ -72,37 +73,40 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
         }
         else if(Users[msg.sender].Type == UserType.Investor) {
             for (uint j = 0; j < applications.length; j++) {
+                if(applications[j].Status == AppStatus.Funding) {
                     result[j] = j;
+                }
             }
         }
         return result;
     }
 
-    function GetAppication(uint id) public view returns(uint[], uint, uint, uint) {
+    function GetAppication(uint id) public view returns(address, uint[], uint, uint, uint,uint, uint, uint, uint, address[]) {
         Application memory app = applications[id];
-        return (app.Docs, app.TotalAmount, app.Duration, app.Interests);
+        return (app.Applicant, app.Docs, app.TotalAmount, app.CurAmount, 
+        app.CreatedTime, app.StartTime, app.Duration, app.Interests, uint(app.Status), app.InvestedAddress);
     }
 
-    function Apply(uint[] docs, uint totalAmount, uint duration, uint interests) public {
-        apply(msg.sender, docs, totalAmount, duration, interests);
+    function Apply(uint[] docs, uint totalAmount, uint curTime, uint duration, uint interests) public {
+        apply(msg.sender, docs, totalAmount, curTime, duration, interests);
     }
 
     function Invest(uint appId, uint curTime) public payable {
-        Application app = applications[appId];
+        Application storage app = applications[appId];
         if(app.Status == AppStatus.Funding) {
             if (curTime - app.StartTime > app.Duration) {
                 app.Status = AppStatus.Failed;
                 refundToBuyer(msg.value, msg.sender);
             }
             else {
-                invest(appId, msg.value);
+                invest(app, msg.value, curTime);
             }
         }
     }
 
     //Only owner of the contract can fail an application because of out of time.
     function FailApplication(uint appId) public onlyOwner {
-        Application app = applications[appId];
+        Application storage app = applications[appId];
         app.Status = AppStatus.Failed;
         for (uint i = 0; i < app.InvestedAddress.length; i++) {
                 refundToBuyer(app.InvestedAmount[app.InvestedAddress[i]], app.InvestedAddress[i]);
@@ -110,12 +114,15 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
     }
 
     function RepossessProperty(uint appId) public onlyOwner {
-        Application app = applications[appId];
+        Application storage app = applications[appId];
         app.Status = AppStatus.Repossessed;
     }
 
     function Repay(uint appId) public payable {
-        
+        Application storage app = applications[appId];
+        if (app.Applicant == msg.sender) {
+
+        }
     }
 
     function refundToBuyer(uint amount, address to) private {

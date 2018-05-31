@@ -1,8 +1,6 @@
 pragma solidity ^0.4.21;
 
-import "./Ownable.sol";
-
-contract UserRegistration is Ownable {
+contract UserRegistration {
 
 
     enum UserType {Borrower, Investor, Verifier}
