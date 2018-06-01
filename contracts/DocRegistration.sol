@@ -17,10 +17,11 @@ contract DocRegistration {
     mapping(uint =>address) docToOwner;
     mapping(address => uint) ownerDocCount;
 
-    function docRegister(string name, uint curTime, DocType doctype, string source) internal {
-        uint id = documents.push(Document(name, curTime, doctype, source, false));
+    function docRegister(string name, uint curTime, DocType doctype, string source) internal returns(uint) {
+        uint id = documents.push(Document(name, curTime, doctype, source, false)) - 1;
         docToOwner[id] = msg.sender;
         ownerDocCount[msg.sender]++;
+        return id;
     }
 
     function docVerify(uint docId) internal {

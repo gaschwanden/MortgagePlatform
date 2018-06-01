@@ -28,8 +28,8 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
         userVerify(user);
     }
 
-    function DocRegister(string name, uint curTime, DocType doctype, string source) public {
-        docRegister(name, curTime, doctype, source);
+    function DocRegister(string name, uint curTime, DocType doctype, string source) public returns(uint){
+        return docRegister(name, curTime, doctype, source);
     }
 
     function DocVerify(uint docId) public {
@@ -39,7 +39,7 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
     }
 
     function GetDocs(address uid) public view returns(uint[]) {
-        uint[] memory result = new uint[](ownerDocCount[msg.sender]);
+        uint[] memory result = new uint[](ownerDocCount[uid]);
         uint counter = 0;
         for (uint i = 0; i < documents.length; i++) {
             if (docToOwner[i] == uid) {
@@ -59,16 +59,9 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
 
     }
 
-    //Get all applications that are still funding
-    function GetAvailableApplications() public view returns(uint[]) {
-        uint[] memory result = new uint[](ownerAppCount[msg.sender]);
-        uint counter = 0;
-        for (uint j = 0; j < applications.length; j++) {
-            if(applications[j].Status == AppStatus.Funding && appToOwner[j] != msg.sender) {
-                result[j] = j;
-            }
-        return result;
-        }
+    //Get all applications
+    function GetAllApplications() public view returns(uint) {
+        return applications.length;
     }
 
     //Get all applications of a user
@@ -84,14 +77,14 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
         return result;
     }
 
-    function GetApplication(uint id) public view returns(address, uint[], uint, uint, uint,uint, uint, uint, uint, address[]) {
+    function GetApplication(uint id) public view returns(address, uint[], uint, uint, uint, uint, uint, uint, uint, uint, address[]) {
         Application memory app = applications[id];
         return (app.Applicant, app.Docs, app.TotalAmount, app.CurAmount,
-        app.CreatedTime, app.StartTime, app.Duration, app.Interests, uint(app.Status), app.InvestedAddress);
+        app.CreatedTime, app.StartTime, app.FundingDuration,app.RepayDuration, app.Interests, uint(app.Status), app.InvestedAddress);
     }
 
-    function Apply(uint[] docs, uint totalAmount, uint curTime, uint duration, uint interests) public {
-        uint id = apply(msg.sender, docs, totalAmount, curTime, duration, interests);
+    function Apply(uint[] docs, uint totalAmount, uint curTime, uint fundingDuration, uint repayDuration, uint interests) public {
+        uint id = apply(msg.sender, docs, totalAmount, curTime, fundingDuration, repayDuration, interests);
         ownerAppCount[msg.sender]++;
         appToOwner[id] = msg.sender;
     }
@@ -99,7 +92,7 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
     function Invest(uint appId, uint curTime) public payable {
         Application storage app = applications[appId];
         if(app.Status == AppStatus.Funding) {
-            if (curTime - app.StartTime > app.Duration) {
+            if (curTime - app.CreatedTime > app.FundingDuration) {
                 app.Status = AppStatus.Failed;
                 refundToBuyer(msg.value, msg.sender);
             }

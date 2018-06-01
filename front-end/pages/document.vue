@@ -10,7 +10,7 @@
         <div class="title">
           <span v-if="doc.verified"><el-button  type="success" style="float: right" icon="el-icon-success">Verified</el-button></span> 
           <span v-else><el-button type="warning" icon="el-icon-warning" style="float:right">Unverified</el-button></span>
-          <span >{{doc.name}}</span> 
+          <span style="display:inline-block">{{doc.name}}</span> 
         </div>
         <div class="bottom">
           <img :src="doc.sourceUrl" class="image">

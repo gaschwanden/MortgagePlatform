@@ -18,14 +18,16 @@ class Document {
 }
 
 class Application {
-  constructor(applicant, docs, totalAmount, curAmount, createdTime, startTime, duration, interests, status, address) {
+  constructor(id, applicant, docs, totalAmount, curAmount, createdTime, startTime, fundingDuration, repayDuration, interests, status, address) {
+    this.id = id;
     this.applicant = applicant,
     this.docs = docs;
     this.totalAmount = totalAmount;
     this.curAmount = curAmount;
     this.createdTime = createdTime;
     this.startTime = startTime;
-    this.duration = duration;
+    this.fundingDuration = fundingDuration;
+    this.repayDuration = repayDuration;
     this.interests = interests;
     this.status = status;
     this.investedAddress = address;
@@ -35,9 +37,10 @@ class Application {
 let state = {
   web3: {
     coinbase: null,
-    balance: 0
+    balance: 0,
+    web3Instance: null,
   },
-  web3Instance: null,
+  
   contractInstance: null,
   activeIndex: "1",
   logged: false,
@@ -53,10 +56,12 @@ const store = () => new Vuex.Store({
   mutations: {
     registerWeb3Instance(state, payload) {
       console.log('registerWeb3instance Mutation being executed', payload)
-      let result = payload
-      state.web3.coinbase = result.coinbase
-      state.web3.balance = parseInt(result.balance, 10)
-      //state.web3Instance = result.web3
+      let result = payload;
+      let web3copy = state.web3;
+      web3copy.coinbase = result.coinbase
+      web3copy.balance = parseInt(result.balance, 10)
+      web3copy.web3Instance = result.web3
+      state.web3 = web3copy
       //pollWeb3()
     },
     pollWeb3Instance(state, payload) {
@@ -83,9 +88,18 @@ const store = () => new Vuex.Store({
     updateMyApps(state, payload) {
       let applications = [];
       for (let i = 0; i < payload.length; i++) {
-        applications.push(new Application(payload[i].applicant, payload[i].docs, payload[i].totalAmount, payload[i].curAmount, payload[i].createdTime, payload[i].startTime, payload[i].duration, payload[i].interests, payload[i].status, payload[i].investedAddress));
+        applications.push(new Application(payload[i].id, payload[i].applicant, payload[i].docs, payload[i].totalAmount, payload[i].curAmount, payload[i].createdTime, 
+          payload[i].startTime, payload[i].fundingDuration, payload[i].repayDuration, payload[i].interests, payload[i].status, payload[i].investedAddress));
       }
       state.myApplications = applications;
+    },
+    updateAllApps(state, payload) {
+      let applications = [];
+      for (let i = 0; i < payload.length; i++) {
+        applications.push(new Application(payload[i].id, payload[i].applicant, payload[i].docs, payload[i].totalAmount, payload[i].curAmount, payload[i].createdTime, 
+          payload[i].startTime, payload[i].fundingDuration, payload[i].repayDuration, payload[i].interests, payload[i].status, payload[i].investedAddress));
+      }
+      state.allApplications = applications;
     },
   },
   actions: {
@@ -116,6 +130,7 @@ const store = () => new Vuex.Store({
         .GetDocs(this.state.web3.coinbase)
         .call()
         .then(function (result) {
+          console.log("Docs",result)
           for (let i = 0; i < result.length; i++) {
             contract.methods
               .GetDoc(result[i])
@@ -138,17 +153,40 @@ const store = () => new Vuex.Store({
         .GetApplications(this.state.web3.coinbase)
         .call()
         .then(function (result) {
-          console.log(result)
+          console.log("Myapp", result)
           for (let i = 0; i < result.length; i++) {
             contract.methods
               .GetApplication(result[i])
               .call()
               .then(function (re) {
-                console.log(re)
                 applications.push(
-                  new Application(re[0], re[1], re[2], re[3], re[4], re[5], re[6], re[7], re[8], re[9], re[10])
+                  new Application(result[i], re[0], re[1], re[2], re[3], re[4], re[5], re[6], re[7], re[8], re[9], re[10], re[11])
                 );
                 commit('updateMyApps', applications);
+              });
+          }
+        })
+    },
+    updateAllApps({ commit }) {
+      let applications = [];
+      if (this.state.contractInstance == null)
+        return;
+      let contract = this.state.contractInstance();
+      contract.methods
+        .GetAllApplications()
+        .call()
+        .then(function (result) {
+          console.log("allApp", result)
+          for (let i = 0; i < result; i++) {
+            contract.methods
+              .GetApplication(i)
+              .call()
+              .then(function (re) {
+                console.log(re)
+                applications.push(
+                  new Application(i, re[0], re[1], re[2], re[3], re[4], re[5], re[6], re[7], re[8], re[9], re[10], re[11])
+                );
+                commit('updateAllApps', applications);
               });
           }
         })

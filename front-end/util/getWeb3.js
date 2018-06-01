@@ -14,7 +14,7 @@ let getWeb3 = new Promise(function (resolve, reject) {
   if (typeof window.web3 !== 'undefined') {
     let web3 = new Web3(window.web3.currentProvider)
     let currentProvider = web3.currentProvider
-    resolve({web3, currentProvider})
+    resolve({web3() { return web3}})
   } else {
      let web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545')) //GANACHE FALLBACK
      if (!web3)
@@ -24,7 +24,7 @@ let getWeb3 = new Promise(function (resolve, reject) {
   .then(result => {
     return new Promise(function (resolve, reject) {
       // Retrieve coinbase
-      result.web3.eth.getCoinbase((err, coinbase) => {
+      result.web3().eth.getCoinbase((err, coinbase) => {
         if (err) {
           reject(new Error('Unable to retrieve coinbase'))
         } else {
@@ -37,7 +37,7 @@ let getWeb3 = new Promise(function (resolve, reject) {
   .then(result => {
     return new Promise(function (resolve, reject) {
       // Retrieve balance for coinbase
-      result.web3.eth.getBalance(result.coinbase, (err, balance) => {
+      result.web3().eth.getBalance(result.coinbase, (err, balance) => {
         if (err) {
           reject(new Error('Unable to retrieve balance for address: ' + result.coinbase))
         } else {

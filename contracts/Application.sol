@@ -19,7 +19,8 @@ contract Application {
         uint CurAmount;     //wei
         uint CreatedTime;   //date.valueof()
         uint StartTime;     //
-        uint Duration;      //second
+        uint FundingDuration;  //second
+        uint RepayDuration;
         uint Interests;     // %
         uint RepayedAmount;
         AppStatus Status;
@@ -29,16 +30,18 @@ contract Application {
 
     Application[] internal applications;
 
-   function apply(address applicant, uint[] docs, uint totalAmount, uint createdTime, uint duration, uint interests) internal returns(uint){
+   function apply(address applicant, uint[] docs, uint totalAmount, uint createdTime, uint fundingDuration, 
+                    uint repayDuration, uint interests) internal returns(uint){
        Application memory app;
        app.Applicant = applicant;
        app.Docs = docs;
        app.TotalAmount = totalAmount;
        app.CreatedTime = createdTime;
-       app.Duration = duration;
+       app.FundingDuration = fundingDuration;
+       app.RepayDuration = repayDuration;
        app.Interests = interests;
        app.Status = AppStatus.Funding;
-       uint id = applications.push(app);
+       uint id = applications.push(app) - 1;
        return id;
     }
 

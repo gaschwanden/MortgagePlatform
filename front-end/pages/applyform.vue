@@ -16,10 +16,13 @@
     <el-form-item label="Total amount(eth)" prop="totalAmount">
     <el-input v-model="ruleForm2.totalAmount" auto-complete="off"></el-input>
   </el-form-item>
-    <el-form-item label="Duration(days)" prop="duration">
-    <el-input v-model="ruleForm2.duration" auto-complete="off"></el-input>
+    <el-form-item label="Funding Duration(days)" prop="duration">
+    <el-input v-model="ruleForm2.fundingDuration" auto-complete="off"></el-input>
   </el-form-item>
-  <el-form-item label="Interests per month(%)" prop="interests">
+  <el-form-item label="Repay Duration(days)" prop="duration">
+    <el-input v-model="ruleForm2.repayDuration" auto-complete="off"></el-input>
+  </el-form-item>
+  <el-form-item label="Interests(%)" prop="interests">
     <el-input v-model="ruleForm2.interests" auto-complete="off"></el-input>
   </el-form-item>
   <el-form-item>
@@ -39,7 +42,8 @@ export default {
     return {
       ruleForm2: {
         totalAmount: "",
-        duration: "",
+        fundingDuration: "",
+        repayDuration: "",
         interests: "",
         property: "",
       },
@@ -74,9 +78,10 @@ computed: {
             .contractInstance()
             .methods.Apply(
               [this.ruleForm2.property],
-              this.ruleForm2.totalAmount,
+              this.$store.state.web3.web3Instance().utils.toWei(this.ruleForm2.totalAmount),
               date.valueOf(),
-              this.ruleForm2.duration,
+              this.ruleForm2.fundingDuration*24*60*60,
+              this.ruleForm2.repayDuration*24*60*60,
               this.ruleForm2.interests,
             )
             .send({ from: this.$store.state.web3.coinbase })
