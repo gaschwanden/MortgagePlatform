@@ -52,7 +52,9 @@ contract Application {
         if (left > 0) {
             app.StartTime = time;
             app.Status = AppStatus.Repayment;
+            return left;
         }
+        return 0;
     }
 
 }

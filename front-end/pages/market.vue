@@ -3,7 +3,7 @@
     <Myheader></Myheader>
     <br>
 <el-row> 
-  <el-col :span="8" v-for="(app) in applications" :key="app.docs[0]" :offset="2">
+  <el-col :span="8" v-for="(app) in applications" :key="app.id" :offset="2">
     <el-card>
     <div slot="header" class="clearfix">
       <div style="display:inline">

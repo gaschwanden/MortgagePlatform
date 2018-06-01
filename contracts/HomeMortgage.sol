@@ -97,7 +97,10 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
                 refundToBuyer(msg.value, msg.sender);
             }
             else {
-                invest(app, msg.value, curTime);
+                uint left = invest(app, msg.value, curTime);
+                if (left > 0) {
+                    refundToBuyer(left, msg.sender);
+                }
             }
         }
     }
