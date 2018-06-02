@@ -77,9 +77,9 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
         return result;
     }
 
-    function GetApplication(uint id) public view returns(address, uint[], uint, uint, uint, uint, uint, uint, uint, uint, address[]) {
+    function GetApplication(uint id) public view returns(address, uint[], uint, uint, uint, uint, uint, uint, uint, uint, uint, address[]) {
         Application memory app = applications[id];
-        return (app.Applicant, app.Docs, app.TotalAmount, app.CurAmount,
+        return (app.Applicant, app.Docs, app.TotalAmount, app.CurAmount, app.RepayedAmount,
         app.CreatedTime, app.StartTime, app.FundingDuration,app.RepayDuration, app.Interests, uint(app.Status), app.InvestedAddress);
     }
 
@@ -94,13 +94,11 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
         if(app.Status == AppStatus.Funding) {
             if (curTime - app.CreatedTime > app.FundingDuration) {
                 app.Status = AppStatus.Failed;
-                refundToBuyer(msg.value, msg.sender);
+                refund(msg.value, msg.sender);
             }
             else {
                 uint left = invest(app, msg.value, curTime);
-                if (left > 0) {
-                    refundToBuyer(left, msg.sender);
-                }
+                refund(left, msg.sender);
             }
         }
     }
@@ -110,8 +108,8 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
         Application storage app = applications[appId];
         app.Status = AppStatus.Failed;
         for (uint i = 0; i < app.InvestedAddress.length; i++) {
-                refundToBuyer(app.InvestedAmount[app.InvestedAddress[i]], app.InvestedAddress[i]);
-            }
+            refund(app.InvestedAmount[app.InvestedAddress[i]], app.InvestedAddress[i]);
+        }
     }
 
     function RepossessProperty(uint appId) public onlyOwner {
@@ -122,12 +120,24 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
     function Repay(uint appId) public payable {
         Application storage app = applications[appId];
         if (app.Applicant == msg.sender) {
-
+            uint left = repay(app, msg.value);
+            if (left >= 0) {
+                uint total = 0;
+                for (uint i = 0; i < app.InvestedAddress.length; i++) {
+                    total = app.InvestedAmount[app.InvestedAddress[i]] + app.InvestedAmount[app.InvestedAddress[i]]*app.Interests/100;
+                    refund(total, app.InvestedAddress[i]);
+                }
+                refund(left, msg.sender);
+            }
+        }
+        else {
+            refund(msg.value, msg.sender);
         }
     }
 
-    function refundToBuyer(uint amount, address to) private {
-        to.transfer(amount);
+    function refund(uint amount, address to) private {
+        if (amount > 0)
+            to.transfer(amount);
     }
     
 }

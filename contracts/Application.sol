@@ -39,6 +39,8 @@ contract Application {
        app.CreatedTime = createdTime;
        app.FundingDuration = fundingDuration;
        app.RepayDuration = repayDuration;
+       app.RepayedAmount = 0;
+       app.StartTime = 0;
        app.Interests = interests;
        app.Status = AppStatus.Funding;
        uint id = applications.push(app) - 1;
@@ -46,15 +48,33 @@ contract Application {
     }
 
     function invest(Application storage app, uint amount, uint time) internal returns(uint) {
-        app.CurAmount += amount;
-        app.InvestedAmount[msg.sender] += amount;
         uint left = app.TotalAmount - app.CurAmount;
-        if (left > 0) {
-            app.StartTime = time;
+        if (amount >= left) {
+            app.CurAmount = app.TotalAmount;
+            app.InvestedAmount[msg.sender] += left;
             app.Status = AppStatus.Repayment;
-            return left;
+            app.StartTime = time;
+            return amount - left;
         }
-        return 0;
+        else {
+            app.CurAmount += amount;
+            app.InvestedAmount[msg.sender] += left;
+            return 0;
+        }
+    }
+
+    function repay(Application storage app, uint amount) internal returns(uint) {
+        uint total = app.TotalAmount + app.TotalAmount*app.Interests/100;
+        uint left = total - app.RepayedAmount;
+        if (amount >= left) {
+            app.RepayedAmount = total;
+            app.Status = AppStatus.Redeemed;
+            return amount - left;
+        }
+        else {
+            app.RepayedAmount += amount;
+            return 0;
+        }
     }
 
 }

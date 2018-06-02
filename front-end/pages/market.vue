@@ -29,27 +29,27 @@
     </span>
   </div>
       <div class="content">
-        <div v-if="app.startTime == 0"></div>
-        <div v-else >Time started: {{currentDate.toLocaleString()}}</div>
         <div class="content-el">Funding Duration: {{app.fundingDuration/24/60/60}} days</div>
         <div class="content-el">Repay Duration: {{app.repayDuration/24/60/60}} days</div>
         <div class="content-el">Interets: {{app.interests}}%</div>
         <div class="content-el">Total Amount: {{app.totalAmount/1000000000000000000}} eth</div>
-        <el-progress class="content-el" :percentage="app.curAmount/app.totalAmount*100"></el-progress>
+        <el-progress  :text-inside="true" class="content-el" :percentage="(app.curAmount/app.totalAmount*100).toFixed(2)"></el-progress>
         <div class="content-el">Raised Amount: {{app.curAmount/1000000000000000000}} eth</div>
+        <div v-if="app.startTime == 0"></div>
+        <div v-else class="content-el">Repay started: {{currentDate.toLocaleString()}}</div>
       </div>
       <el-button-group>
         <el-popover
-  placement="right"
-  width="220"
-  v-model="visibility[app.id]">
-  <p>How much you want to invest?</p>
-  <div style="text-align: right;">
-    <el-input v-model="input" placeholder="eth" size="mini" style="margin-bottom:10px"></el-input>
-    <el-button type="success" size="mini" v-on:click="invest(app.id)">Ok</el-button>
-  </div>
-  <el-button slot="reference" type="success">Invest</el-button>
-</el-popover>
+          placement="right"
+          width="220"
+          v-model="visibility[app.id]">
+          <p>How much you want to invest?</p>
+          <div style="text-align: right;">
+            <el-input v-model="input" placeholder="eth" size="mini" style="margin-bottom:10px"></el-input>
+            <el-button type="success" size="mini" v-on:click="invest(app.id)">Ok</el-button>
+          </div>
+          <el-button slot="reference" type="success">Invest</el-button>
+        </el-popover>
       </el-button-group>
     </el-card>
   </el-col>
@@ -109,9 +109,18 @@ export default {
       input:"",
     };
   },
-    computed: {
+  computed: {
     applications() {
-      return this.$store.state.allApplications
+      let applications = this.$store.state.allApplications;
+      if (applications != null) {
+        let available = [];
+        for (var i = 0; i < applications.length; i++) {
+          if (applications[i].status == 0) {
+            available.push(applications[i]);
+          }
+        }
+        return available;
+      }
     },
     visibility() {
       let visibility = [];

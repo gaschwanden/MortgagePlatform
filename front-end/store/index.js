@@ -18,12 +18,13 @@ class Document {
 }
 
 class Application {
-  constructor(id, applicant, docs, totalAmount, curAmount, createdTime, startTime, fundingDuration, repayDuration, interests, status, address) {
+  constructor(id, applicant, docs, totalAmount, curAmount, repayedAmount, createdTime, startTime, fundingDuration, repayDuration, interests, status, address) {
     this.id = id;
     this.applicant = applicant,
     this.docs = docs;
     this.totalAmount = totalAmount;
     this.curAmount = curAmount;
+    this.repayedAmount = repayedAmount;
     this.createdTime = createdTime;
     this.startTime = startTime;
     this.fundingDuration = fundingDuration;
@@ -88,7 +89,7 @@ const store = () => new Vuex.Store({
     updateMyApps(state, payload) {
       let applications = [];
       for (let i = 0; i < payload.length; i++) {
-        applications.push(new Application(payload[i].id, payload[i].applicant, payload[i].docs, payload[i].totalAmount, payload[i].curAmount, payload[i].createdTime, 
+        applications.push(new Application(payload[i].id, payload[i].applicant, payload[i].docs, payload[i].totalAmount, payload[i].curAmount, payload[i].repayedAmount, payload[i].createdTime, 
           payload[i].startTime, payload[i].fundingDuration, payload[i].repayDuration, payload[i].interests, payload[i].status, payload[i].investedAddress));
       }
       state.myApplications = applications;
@@ -96,7 +97,7 @@ const store = () => new Vuex.Store({
     updateAllApps(state, payload) {
       let applications = [];
       for (let i = 0; i < payload.length; i++) {
-        applications.push(new Application(payload[i].id, payload[i].applicant, payload[i].docs, payload[i].totalAmount, payload[i].curAmount, payload[i].createdTime, 
+        applications.push(new Application(payload[i].id, payload[i].applicant, payload[i].docs, payload[i].totalAmount, payload[i].curAmount, payload[i].repayedAmount, payload[i].createdTime, 
           payload[i].startTime, payload[i].fundingDuration, payload[i].repayDuration, payload[i].interests, payload[i].status, payload[i].investedAddress));
       }
       state.allApplications = applications;
@@ -160,7 +161,7 @@ const store = () => new Vuex.Store({
               .call()
               .then(function (re) {
                 applications.push(
-                  new Application(result[i], re[0], re[1], re[2], re[3], re[4], re[5], re[6], re[7], re[8], re[9], re[10], re[11])
+                  new Application(result[i], re[0], re[1], re[2], re[3], re[4], re[5], re[6], re[7], re[8], re[9], re[10], re[11], re[12])
                 );
                 commit('updateMyApps', applications);
               });
@@ -184,7 +185,7 @@ const store = () => new Vuex.Store({
               .then(function (re) {
                 console.log(re)
                 applications.push(
-                  new Application(i, re[0], re[1], re[2], re[3], re[4], re[5], re[6], re[7], re[8], re[9], re[10], re[11])
+                  new Application(i, re[0], re[1], re[2], re[3], re[4], re[5], re[6], re[7], re[8], re[9], re[10], re[11], re[12])
                 );
                 commit('updateAllApps', applications);
               });

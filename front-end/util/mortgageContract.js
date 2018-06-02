@@ -1,4 +1,4 @@
-const address = '0xc190998c09c9b795d6c1d8c425f031e8f39d9ce8';
+const address = '0xa5b2e00b07eaa7285943d403e8a6b14e0bda1487';
 
 const ABI = [
 	{
@@ -239,6 +239,10 @@ const ABI = [
 			{
 				"name": "",
 				"type": "uint256[]"
+			},
+			{
+				"name": "",
+				"type": "uint256"
 			},
 			{
 				"name": "",

@@ -80,8 +80,8 @@ computed: {
               [this.ruleForm2.property],
               this.$store.state.web3.web3Instance().utils.toWei(this.ruleForm2.totalAmount),
               date.valueOf(),
-              this.ruleForm2.fundingDuration*24*60*60,
-              this.ruleForm2.repayDuration*24*60*60,
+              this.ruleForm2.fundingDuration*24*60*60*1000,
+              this.ruleForm2.repayDuration*24*60*60*1000,
               this.ruleForm2.interests,
             )
             .send({ from: this.$store.state.web3.coinbase })
