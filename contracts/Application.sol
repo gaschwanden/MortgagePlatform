@@ -63,17 +63,22 @@ contract Application {
         }
     }
 
-    function repay(Application storage app, uint amount) internal returns(uint) {
+    function repay(Application storage app, uint amount) internal returns(bool, uint) {
         uint total = app.TotalAmount + app.TotalAmount*app.Interests/100;
         uint left = total - app.RepayedAmount;
-        if (amount >= left) {
+        if (amount > left) {
             app.RepayedAmount = total;
             app.Status = AppStatus.Redeemed;
-            return amount - left;
+            return (true, amount - left);
+        }
+        else if (amount == left) {
+            app.RepayedAmount += amount;
+            app.Status = AppStatus.Redeemed;
+            return (true, 0);
         }
         else {
             app.RepayedAmount += amount;
-            return 0;
+            return (false, 0);
         }
     }
 

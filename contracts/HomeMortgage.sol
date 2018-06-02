@@ -120,8 +120,10 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
     function Repay(uint appId) public payable {
         Application storage app = applications[appId];
         if (app.Applicant == msg.sender) {
-            uint left = repay(app, msg.value);
-            if (left >= 0) {
+            bool fullpayed;
+            uint left;
+            (fullpayed, left) = repay(app, msg.value);
+            if (fullpayed) {
                 uint total = 0;
                 for (uint i = 0; i < app.InvestedAddress.length; i++) {
                     total = app.InvestedAmount[app.InvestedAddress[i]] + app.InvestedAmount[app.InvestedAddress[i]]*app.Interests/100;

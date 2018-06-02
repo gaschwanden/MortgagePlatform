@@ -39,8 +39,8 @@
         <div v-if="app.startTime == 0"></div> 
         <div v-else class="content-el"><span v-if="currentDate.setTime(app.startTime)"></span>Repay started: {{currentDate.toLocaleString()}}
           <div class="content-el"><span v-if="(startTime = app.startTime) && (duration = app.repayDuration)"></span>Time left: {{day}} days {{hour}} hours {{minute}} minutes {{second}} seconds</div>
-          <el-progress status="exception" :text-inside="true" :stroke-width="16" class="content-el" :percentage="((app.repayedAmount)/(app.totalAmount)*100).toFixed(2)"></el-progress>
-          <div class="content-el">Repayed Amount: {{app.repayedAmount/1000000000000000000}} eth</div>
+          <el-progress status="success" :text-inside="true" :stroke-width="16" class="content-el" :percentage="((app.repayedAmount)/(app.totalAmount*((1 + app.interests/100)))*100).toFixed(2)"></el-progress>
+          <div class="content-el">Amount left: {{((app.totalAmount*((1 + app.interests/100))) - app.repayedAmount)/1000000000000000000}} eth</div>
         </div>
       </div>
       <el-popover v-if="app.status == 2"
@@ -112,6 +112,7 @@ export default {
       currentDate: new Date(),
       startTime : 0,
       duration : 0,
+      input : ""
     };
   },
     computed: {
@@ -147,7 +148,7 @@ export default {
       let date = new Date();
       this.$store.state
         .contractInstance()
-        .methods.Invest(id, date.valueOf())
+        .methods.Repay(id)
         .send({ from: this.$store.state.web3.coinbase, value: this.$store.state.web3.web3Instance().utils.toWei(this.input) })
         .on("receipt", function(receipt) {
           console.log(receipt);
