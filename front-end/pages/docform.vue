@@ -49,8 +49,10 @@ import firebase from "../util/getFirebase.js";
 
 export default {
   beforeCreate() {
-    // Initialize Firebase
-
+    if (!this.$store.state.logged) {
+      this.$router.push("/");
+      return;
+    }
   },
 
   data() {

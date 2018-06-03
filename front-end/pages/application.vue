@@ -103,6 +103,10 @@ import {Application} from "../store/index.js"
 
 export default {
   beforeCreate() {
+    if (!this.$store.state.logged) {
+      this.$router.push("/");
+      return;
+    }
     this.$store.commit("changeActiveIndex", "4");
     this.$store.dispatch("updateMyApps");
   },

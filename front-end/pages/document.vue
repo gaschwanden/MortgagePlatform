@@ -67,6 +67,10 @@ import Myheader from "./myheader.vue";
 
 export default {
   beforeCreate() {
+    if (!this.$store.state.logged) {
+      this.$router.push("/");
+      return;
+    }
     this.$store.commit("changeActiveIndex", "2");
     this.$store.dispatch("updateDocs");
   },

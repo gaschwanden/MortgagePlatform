@@ -48,6 +48,7 @@ let state = {
   documents: null,
   myApplications: null,
   allApplications: null,
+  userType: 0,
 }
 
 
@@ -73,7 +74,6 @@ const store = () => new Vuex.Store({
     registerContractInstance(state, payload) {
       console.log('Casino contract instance: ', payload)
       state.contractInstance = () => payload;
-      state.logged = true;
     },
     changeActiveIndex(state, payload) {
       state.activeIndex = payload;

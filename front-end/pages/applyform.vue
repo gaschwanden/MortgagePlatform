@@ -38,6 +38,12 @@
 import Myheader from "./myheader.vue";
 
 export default {
+  beforeCreate() {
+    if (!this.$store.state.logged) {
+      this.$router.push("/");
+      return;
+    }
+  },
   data() {
     return {
       ruleForm2: {

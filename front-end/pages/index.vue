@@ -30,6 +30,10 @@
         <el-button type="primary" @click="submitForm('ruleForm2')">Login</el-button>
         <el-button @click="resetForm('ruleForm2')">Reset</el-button>
       </el-form-item>
+      <el-form-item>
+        <h4 style="color: #409EFF;">Please login first to use our service.</h4>
+      </el-form-item>
+      
     </el-form>
     </div>
 
@@ -77,23 +81,9 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let router = this.$router;
-          this.$store.state
-            .contractInstance()
-            .methods.DocRegister(
-              this.ruleForm2.name,
-              this.ruleForm2.type,
-              "asdas.jpg"
-            )
-            .send({ from: this.$store.state.web3.coinbase })
-            .on("receipt", function(receipt) {
-              console.log(receipt);
-              this.$router.push("/document");
-            })
-            .on("error", function(error) {
-              // Do something to alert the user their transaction has failed
-              console.log("Register failed", error);
-            });
+          this.$store.state.logged = true;
+          this.$store.state.userType = type;
+          this.$router.push("/document");
         } else {
           console.log("error submit!!");
           return false;
