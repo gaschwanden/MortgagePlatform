@@ -20,12 +20,14 @@
   <el-form-item>
       <el-upload
         class="upload-demo"
-        action="https://jsonplaceholder.typicode.com/posts/"
+        action=""
         :on-preview="handlePreview"
         :on-remove="handleRemove"
         :before-remove="beforeRemove"
+        :on-success="handleSuccess"
+        :before-upload="beforeAvatarUpload"
         multiple
-        :limit="3"
+        :limit="1"
         :on-exceed="handleExceed"
         :file-list="fileList">
   <el-button size="medium" type="primary">Upload</el-button>
@@ -43,8 +45,14 @@
 
 <script>
 import Myheader from "./myheader.vue";
+import firebase from "../util/getFirebase.js";
 
 export default {
+  beforeCreate() {
+    // Initialize Firebase
+
+  },
+
   data() {
     return {
       ruleForm2: {
@@ -75,22 +83,44 @@ export default {
         if (valid) {
           let router = this.$router;
           let date = new Date();
-          this.$store.state
-            .contractInstance()
-            .methods.DocRegister(
-              this.ruleForm2.name,
-              date.valueOf(),
-              this.ruleForm2.type,
-              "asdas.jpg"
-            )
-            .send({ from: this.$store.state.web3.coinbase })
-            .on("receipt", function(receipt) {
-              console.log(receipt);
-              this.$router.push("/document");
-            })
-            .on("error", function(error) {
-              // Do something to alert the user their transaction has failed
-              console.log("Register failed", error);
+          let store = this.$store;
+          let name = this.ruleForm2.name;
+          let type = this.ruleForm2.type;
+          let storageRef = firebase.storage().ref();
+          let child = storageRef.child('doc/' + date.toString() + ".jpg");
+          if (this. fileList.length == 0) {
+            alert("Have to provide an image of the document");
+            return;
+          }
+          let task = child.put(this.fileList[0]);
+          task.on('state_changed', 
+            function progress(snapshot) {
+              let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log(percentage);
+            },
+            function error(err) {
+              console.log("err", err);
+            },
+            function complete() {
+              task.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                console.log("url", downloadURL);
+                store.state.contractInstance()
+                .methods.DocRegister(
+                  name,
+                  date.valueOf(),
+                  type,
+                  downloadURL
+                )
+                .send({ from: store.state.web3.coinbase })
+                .on("receipt", function(receipt) {
+                  console.log(receipt);
+                  router.push("/document");
+                })
+                .on("error", function(error) {
+                  // Do something to alert the user their transaction has failed
+                  console.log("Register failed", error);
+                });
+              })
             });
         } else {
           console.log("error submit!!");
@@ -109,14 +139,29 @@ export default {
     },
     handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+        `Only 1 file allowed, ${files.length + fileList.length} provided`
       );
+      console.log(fileList);
     },
     beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    }
+      return this.$confirm(`Are you sure to delete ${file.name}？`);
+    },
+    handleSuccess(res, file) {
+      this.fileList.push(file.raw);
+      console.log(file.raw);
+    },
+    beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg;image/png';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('Only jpg and png allowed');
+        }
+        if (!isLt2M) {
+          this.$message.error('File size go beyond 2MB!');
+        }
+        return isJPG && isLt2M;
+      }
   },
   components: {
     Myheader

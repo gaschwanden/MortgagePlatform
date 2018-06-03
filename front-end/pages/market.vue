@@ -29,11 +29,11 @@
     </span>
   </div>
       <div class="content">
-        <div class="content-el">Funding Duration: {{app.fundingDuration/24/60/60}} days</div>
-        <div class="content-el">Repay Duration: {{app.repayDuration/24/60/60}} days</div>
+        <div class="content-el">Funding Duration: {{app.fundingDuration/24/60/60/1000}} days</div>
+        <div class="content-el">Repay Duration: {{app.repayDuration/24/60/60/1000}} days</div>
         <div class="content-el">Interets: {{app.interests}}%</div>
         <div class="content-el">Total Amount: {{app.totalAmount/1000000000000000000}} eth</div>
-        <el-progress  :text-inside="true" class="content-el" :percentage="(app.curAmount/app.totalAmount*100).toFixed(2)"></el-progress>
+        <el-progress :stroke-width="16" :text-inside="true" class="content-el" :percentage="(app.curAmount/app.totalAmount*100).toFixed(2)"></el-progress>
         <div class="content-el">Raised Amount: {{app.curAmount/1000000000000000000}} eth</div>
         <div v-if="app.startTime == 0"></div>
         <div v-else class="content-el">Repay started: {{currentDate.toLocaleString()}}</div>
@@ -134,7 +134,8 @@ export default {
     invest(id) {
       this.visible2 = false;
       let date = new Date();
-      this.$store.state
+      let store = this.$store;
+      store.state
         .contractInstance()
         .methods.Invest(id, date.valueOf())
         .send({ from: this.$store.state.web3.coinbase, value: this.$store.state.web3.web3Instance().utils.toWei(this.input) })
@@ -144,6 +145,10 @@ export default {
         .on("error", function(error) {
           // Do something to alert the user their transaction has failed
           console.log("Register failed", error);
+        }).then(function(receipt) {
+          console.log("ASD");
+          console.log(receipt);
+          store.dispatch("updateAllApps");
         });
     }
   },

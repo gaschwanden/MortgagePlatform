@@ -1,6 +1,5 @@
 pragma solidity ^0.4.21;
 
-//Also serve as escrow contract
 
 contract Application {
 
@@ -48,6 +47,16 @@ contract Application {
     }
 
     function invest(Application storage app, uint amount, uint time) internal returns(uint) {
+        bool invested = false;
+        for (var i = 0; i < app.InvestedAddress.length; i++) {
+            if (app.InvestedAddress[i] == msg.sender) {
+                invested = true;
+                break;
+            }
+        }
+        if (!invested) {
+            app.InvestedAddress.push(msg.sender);
+        }
         uint left = app.TotalAmount - app.CurAmount;
         if (amount >= left) {
             app.CurAmount = app.TotalAmount;
@@ -58,7 +67,7 @@ contract Application {
         }
         else {
             app.CurAmount += amount;
-            app.InvestedAmount[msg.sender] += left;
+            app.InvestedAmount[msg.sender] += amount;
             return 0;
         }
     }
@@ -66,15 +75,10 @@ contract Application {
     function repay(Application storage app, uint amount) internal returns(bool, uint) {
         uint total = app.TotalAmount + app.TotalAmount*app.Interests/100;
         uint left = total - app.RepayedAmount;
-        if (amount > left) {
+        if (amount >= left) {
             app.RepayedAmount = total;
             app.Status = AppStatus.Redeemed;
             return (true, amount - left);
-        }
-        else if (amount == left) {
-            app.RepayedAmount += amount;
-            app.Status = AppStatus.Redeemed;
-            return (true, 0);
         }
         else {
             app.RepayedAmount += amount;

@@ -5,7 +5,7 @@
 <el-row> 
       <el-button type="primary" icon="el-icon-circle-plus" circle v-on:click="plusClick" style="float:right"></el-button>
   <el-col :span="8" v-for="(app) in applications" :key="app.id" :offset="2">
-    <el-card>
+    <el-card style="margin-bottom: 30px;">
     <div slot="header" class="clearfix">
       <div style="display:inline">
         <div style="display:inline-block">Borrower: {{app.applicant}}</div>
@@ -30,17 +30,17 @@
     </span>
   </div>
       <div class="content">
-        <div class="content-el">Funding Duration: {{app.fundingDuration/24/60/60}} days</div>
-        <div class="content-el">Repay Duration: {{app.repayDuration/24/60/60}} days</div>
+        <div class="content-el">Funding Duration: {{app.fundingDuration/24/60/60/1000}} days</div>
+        <div class="content-el">Repay Duration: {{app.repayDuration/24/60/60/1000}} days</div>
         <div class="content-el">Interets: {{app.interests}}%</div>
         <div class="content-el">Total Amount: {{app.totalAmount/1000000000000000000}} eth</div>
         <el-progress  :text-inside="true" :stroke-width="16" class="content-el" :percentage="(app.curAmount/app.totalAmount).toFixed(2)*100"></el-progress>
         <div class="content-el">Raised Amount: {{app.curAmount/1000000000000000000}} eth</div>
         <div v-if="app.startTime == 0"></div> 
         <div v-else class="content-el"><span v-if="currentDate.setTime(app.startTime)"></span>Repay started: {{currentDate.toLocaleString()}}
-          <div class="content-el"><span v-if="(startTime = app.startTime) && (duration = app.repayDuration)"></span>Time left: {{day}} days {{hour}} hours {{minute}} minutes {{second}} seconds</div>
+          <div class="content-el"><span v-if="app.status == 2 && (startTime = app.startTime) && (duration = app.repayDuration)">Time left: {{day}} days {{hour}} hours {{minute}} minutes {{second}} seconds</span></div>
           <el-progress status="success" :text-inside="true" :stroke-width="16" class="content-el" :percentage="((app.repayedAmount)/(app.totalAmount*((1 + app.interests/100)))*100).toFixed(2)"></el-progress>
-          <div class="content-el">Amount left: {{((app.totalAmount*((1 + app.interests/100))) - app.repayedAmount)/1000000000000000000}} eth</div>
+          <div class="content-el" v-if="app.status == 2">Amount left: {{((app.totalAmount*((1 + app.interests/100))) - app.repayedAmount)/1000000000000000000}} eth</div>
         </div>
       </div>
       <el-popover v-if="app.status == 2"
@@ -146,15 +146,16 @@ export default {
     repay(id) {
       this.visible2 = false;
       let date = new Date();
-      this.$store.state
+      let store = this.$store;
+      store.state
         .contractInstance()
         .methods.Repay(id)
         .send({ from: this.$store.state.web3.coinbase, value: this.$store.state.web3.web3Instance().utils.toWei(this.input) })
         .on("receipt", function(receipt) {
+          store.dispatch("updateMyApps");
           console.log(receipt);
         })
         .on("error", function(error) {
-          // Do something to alert the user their transaction has failed
           console.log("Register failed", error);
         });
     },

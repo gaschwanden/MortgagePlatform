@@ -137,9 +137,22 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
         }
     }
 
+    function GetInvestedList(uint appId) public view returns(address[], uint[]) {
+        Application app = applications[appId];
+        uint[] memory amount = new uint[](app.InvestedAddress.length);
+        for (uint i = 0; i < app.InvestedAddress.length; i++) {
+            amount[i] = app.InvestedAmount[app.InvestedAddress[i]];
+        }
+        return (app.InvestedAddress, amount);
+    }
+
     function refund(uint amount, address to) private {
         if (amount > 0)
             to.transfer(amount);
+    }
+
+    function GetBalance() public view returns(uint){
+        return address(this).balance;
     }
     
 }
