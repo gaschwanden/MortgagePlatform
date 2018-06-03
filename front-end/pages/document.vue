@@ -8,14 +8,17 @@
     <el-card>
       <div style="padding: 14px;" >
         <div class="title">
+          <span style="display:inline-block">{{doc.name}} </span>
           <span v-if="doc.verified"><el-button  type="success" style="float: right" icon="el-icon-success">Verified</el-button></span> 
           <span v-else><el-button type="warning" icon="el-icon-warning" style="float:right">Unverified</el-button></span>
-          <span style="display:inline-block">{{doc.name}}</span> 
+
         </div>
         <div class="bottom">
           <img :src="doc.sourceUrl" class="image">
         </div>
-        <span>{{doc.type}}</span>
+          <el-tag v-if="doc.type == 0"> ID</el-tag>
+          <el-tag v-else-if="doc.type == 1"> Financial</el-tag>
+          <el-tag v-else> Property</el-tag>
       </div>
     </el-card>
   </el-col>
@@ -28,6 +31,7 @@
 <style>
 .title {
   line-height: 12px;
+  margin-bottom: 40px;
 }
 
 .bottom {
