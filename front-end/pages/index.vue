@@ -31,7 +31,7 @@
         <el-button @click="resetForm('ruleForm2')">Reset</el-button>
       </el-form-item>
       <el-form-item>
-        <h4 style="color: #409EFF;">Please login first to use our service.</h4>
+        <h4 style="color: #409EFF;">Please login to use our service.</h4>
       </el-form-item>
       
     </el-form>
@@ -82,7 +82,7 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.$store.state.logged = true;
-          this.$store.state.userType = type;
+          this.$store.state.userType = this.type;
           this.$router.push("/document");
         } else {
           console.log("error submit!!");

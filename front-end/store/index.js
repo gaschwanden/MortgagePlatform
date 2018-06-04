@@ -46,6 +46,7 @@ let state = {
   activeIndex: "1",
   logged: false,
   documents: null,
+  allDocuments: null,
   myApplications: null,
   allApplications: null,
   userType: 0,

@@ -3,16 +3,16 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-const _4a8234eb = () => import('../pages/register.vue' /* webpackChunkName: "pages/register" */).then(m => m.default || m)
-const _66326afe = () => import('../pages/myheader.vue' /* webpackChunkName: "pages/myheader" */).then(m => m.default || m)
-const _1330135e = () => import('../pages/login.vue' /* webpackChunkName: "pages/login" */).then(m => m.default || m)
-const _587cdb63 = () => import('../pages/document.vue' /* webpackChunkName: "pages/document" */).then(m => m.default || m)
-const _7c393b9a = () => import('../pages/applyform.vue' /* webpackChunkName: "pages/applyform" */).then(m => m.default || m)
-const _7676e4b8 = () => import('../pages/application.vue' /* webpackChunkName: "pages/application" */).then(m => m.default || m)
-const _74b9c764 = () => import('../pages/docform.vue' /* webpackChunkName: "pages/docform" */).then(m => m.default || m)
-const _f80c9bf8 = () => import('../pages/market.vue' /* webpackChunkName: "pages/market" */).then(m => m.default || m)
-const _111f06de = () => import('../pages/profile.vue' /* webpackChunkName: "pages/profile" */).then(m => m.default || m)
-const _2cc0533a = () => import('../pages/index.vue' /* webpackChunkName: "pages/index" */).then(m => m.default || m)
+const _1c8f7804 = () => import('../pages/register.vue' /* webpackChunkName: "pages/register" */).then(m => m.default || m)
+const _c217e4cc = () => import('../pages/myheader.vue' /* webpackChunkName: "pages/myheader" */).then(m => m.default || m)
+const _5fab9c50 = () => import('../pages/login.vue' /* webpackChunkName: "pages/login" */).then(m => m.default || m)
+const _2a8a1e7c = () => import('../pages/document.vue' /* webpackChunkName: "pages/document" */).then(m => m.default || m)
+const _285748be = () => import('../pages/applyform.vue' /* webpackChunkName: "pages/applyform" */).then(m => m.default || m)
+const _6bca1eff = () => import('../pages/application.vue' /* webpackChunkName: "pages/application" */).then(m => m.default || m)
+const _324985aa = () => import('../pages/docform.vue' /* webpackChunkName: "pages/docform" */).then(m => m.default || m)
+const _3b023146 = () => import('../pages/market.vue' /* webpackChunkName: "pages/market" */).then(m => m.default || m)
+const _6991f258 = () => import('../pages/profile.vue' /* webpackChunkName: "pages/profile" */).then(m => m.default || m)
+const _06828ec1 = () => import('../pages/index.vue' /* webpackChunkName: "pages/index" */).then(m => m.default || m)
 
 
 
@@ -74,52 +74,52 @@ export function createRouter () {
     routes: [
 		{
 			path: "/register",
-			component: _4a8234eb,
+			component: _1c8f7804,
 			name: "register"
 		},
 		{
 			path: "/myheader",
-			component: _66326afe,
+			component: _c217e4cc,
 			name: "myheader"
 		},
 		{
 			path: "/login",
-			component: _1330135e,
+			component: _5fab9c50,
 			name: "login"
 		},
 		{
 			path: "/document",
-			component: _587cdb63,
+			component: _2a8a1e7c,
 			name: "document"
 		},
 		{
 			path: "/applyform",
-			component: _7c393b9a,
+			component: _285748be,
 			name: "applyform"
 		},
 		{
 			path: "/application",
-			component: _7676e4b8,
+			component: _6bca1eff,
 			name: "application"
 		},
 		{
 			path: "/docform",
-			component: _74b9c764,
+			component: _324985aa,
 			name: "docform"
 		},
 		{
 			path: "/market",
-			component: _f80c9bf8,
+			component: _3b023146,
 			name: "market"
 		},
 		{
 			path: "/profile",
-			component: _111f06de,
+			component: _6991f258,
 			name: "profile"
 		},
 		{
 			path: "/",
-			component: _2cc0533a,
+			component: _06828ec1,
 			name: "index"
 		}
     ],
