@@ -20,6 +20,14 @@
 </div>
 </template> 
 
+<style>
+.content-center {
+  width:60%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+</style>
 <script>
 import {Document, Application} from "../store/index.js"
 

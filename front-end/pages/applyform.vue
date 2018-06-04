@@ -2,6 +2,7 @@
     <div>
     <Myheader></Myheader>
     <br>
+    <div class="content-center">
     <el-form :model="ruleForm2" status-icon ref="ruleForm2" label-width="180px" class="demo-ruleForm">
   <el-form-item label="Property" prop="Property">
       <el-select v-model="ruleForm2.property" placeholder="Select Property">
@@ -30,6 +31,7 @@
     <el-button @click="resetForm('ruleForm2')">Reset</el-button>
   </el-form-item>
 </el-form>
+    </div>
     </div>
 
 </template>

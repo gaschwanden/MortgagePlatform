@@ -1,10 +1,10 @@
 <template>
     <div >
     <Myheader></Myheader>
-    <div class="login">
+    <div class="content-center">
       
 
-      <el-form :model="ruleForm2" status-icon ref="ruleForm2" label-width="120px" class="demo-ruleForm">
+      <el-form :model="ruleForm2" status-icon ref="ruleForm2" label-width="180px" class="demo-ruleForm">
         <el-form-item >
         <h1>Welcome to HomeMortgage</h1>
         <h3>A decentralized mortgage market for real-estate crowdfunding.</h3>
@@ -13,10 +13,10 @@
       <el-form-item label="Name" prop="name">
         <el-input v-model.number="ruleForm2.name"></el-input>
       </el-form-item>
-      <el-form-item label="Address" prop="address">
+      <el-form-item label="Ethereum Wallet Address" prop="address">
         <el-input v-model.number="ruleForm2.address"></el-input>
       </el-form-item>
-        <el-form-item label="Type" prop="Type">
+        <el-form-item label="Role" prop="Type">
           <el-select v-model="ruleForm2.type" placeholder="Select">
         <el-option
           v-for="item in options"
@@ -41,19 +41,15 @@
 
 </template>
 
-<style>
-.login {
-  width:50%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-</style>
 
 <script>
 import Myheader from "./myheader.vue";
 
 export default {
+  beforeCreate() {
+    this.$store.commit("changeActiveIndex", "1");
+  },
+
   data() {
     return {
       ruleForm2: {

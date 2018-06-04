@@ -1,8 +1,11 @@
 <template>
     <div>
     <Myheader></Myheader>
-
+    <div class="content-center">
     <el-form :model="ruleForm2" status-icon ref="ruleForm2" label-width="120px" class="demo-ruleForm">
+      <el-form-item >
+        <h3>Upload your document.</h3>
+      </el-form-item>
 
   <el-form-item label="Name" prop="name">
     <el-input v-model="ruleForm2.name" auto-complete="off"></el-input>
@@ -39,6 +42,7 @@
     <el-button @click="resetForm('ruleForm2')">Reset</el-button>
   </el-form-item>
 </el-form>
+    </div>
     </div>
 
 </template>
@@ -153,7 +157,7 @@ export default {
       console.log(file.raw);
     },
     beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg;image/png';
+        const isJPG = file.type === 'image/jpeg' || 'image/png';
         const isLt2M = file.size / 1024 / 1024 < 2;
 
         if (!isJPG) {
