@@ -5,12 +5,12 @@
 <el-row> 
     <el-button type="primary" icon="el-icon-circle-plus" circle v-on:click="plusClick" style="float:right"></el-button>
   <el-col :span="8" v-for="(doc) in documents" :key="doc.id" :offset="2">
-    <el-card>
+    <el-card style="margin-bottom: 30px;">
       <div style="padding: 14px;" >
         <div class="title">
           <span style="display:inline-block">{{doc.name}} </span>
           <span v-if="doc.verified"><el-button  type="success" style="float: right" icon="el-icon-success">Verified</el-button></span> 
-          <span v-else><el-button type="warning" icon="el-icon-warning" style="float:right">Unverified</el-button></span>
+          <span v-else><el-button type="warning" icon="el-icon-warning" style="float:right" @click="verify(doc.id)">Unverified</el-button></span>
 
         </div>
         <div class="bottom">
@@ -102,6 +102,19 @@ export default {
     },
     plusClick() {
       this.$router.push("/docform");
+    },
+    verify(id) {
+      this.$store.state
+        .contractInstance()
+        .methods.DocVerify(id)
+        .send({ from: this.$store.state.web3.coinbase })
+        .on("receipt", function(receipt) {
+          console.log(receipt);
+        })
+        .on("error", function(error) {
+          // Do something to alert the user their transaction has failed
+          console.log("Register failed", error);
+        });
     }
   },
   components: {

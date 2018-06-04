@@ -35,7 +35,6 @@ contract HomeMortgage is UserRegistration, DocRegistration, Application, Ownable
     function DocVerify(uint docId) public {
         require(Users[msg.sender].Type == UserType.Verifier);
         docVerify(docId);
-        
     }
 
     function GetDocs(address uid) public view returns(uint[]) {

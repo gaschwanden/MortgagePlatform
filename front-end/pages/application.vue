@@ -108,6 +108,7 @@ export default {
       return;
     }
     this.$store.commit("changeActiveIndex", "4");
+    this.$store.dispatch("updateDocs");
     this.$store.dispatch("updateMyApps");
   },
 
